@@ -1,0 +1,2 @@
+SET MDROOT="%ProgramFiles(x86)%\MonoDevelop"
+SET PATH=%PATH%;"%ProgramFiles(x86)%\WiX Toolset v3.7\bin"
