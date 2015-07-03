@@ -1,12 +1,4 @@
-﻿/*
- * Created by SharpDevelop.
- * User: pekka
- * Date: 3.7.2015
- * Time: 6:52
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
+﻿using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using PacketDotNet;
