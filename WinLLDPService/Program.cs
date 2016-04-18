@@ -12,7 +12,7 @@ namespace WinLLDPService
 		/// </summary>
 		static void Main()
 		{
-			// To run more than one service you have to add them here
+			// Run WinLLDPService
 			ServiceBase.Run(new ServiceBase[] { new WinLLDPService() });
 		}
 	}

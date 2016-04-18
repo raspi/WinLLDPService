@@ -12,11 +12,17 @@ namespace WinLLDPService
 		Timer timer;
 		WinLLDP run;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public WinLLDPService()
 		{
 			InitializeComponent();
 		}
 		
+		/// <summary>
+		/// Initialize
+		/// </summary>
 		private void InitializeComponent()
 		{
 			run = new WinLLDP();
@@ -29,20 +35,28 @@ namespace WinLLDPService
 			EventLog.Log = "Application";
 			
 			if (!EventLog.SourceExists(EventLog.Source)) {
+				// Create Windows Event Log source if it doesn't exist
 				EventLog.CreateEventSource(EventLog.Source, this.EventLog.Log);
 			}
 			
+			// Run the LLDP packet sender every 30 seconds
 			timer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
 			//timer = new Timer(30 * 1000);
 			timer.AutoReset = true;
 			timer.Elapsed += sendPacket;
 		}
+
 		
+		/// <summary>
+		/// Main method which is ran every X seconds which is controlled by timer set up in InitializeComponent()  
+		/// </summary>
 		private void sendPacket(object source, ElapsedEventArgs ea)
 		{
 			try {
+				// Run the LLDP packet sender  
 				run.Run();
 			} catch (Exception ex) {
+				// Log run error(s) to Windows Event Log
 				EventLog.WriteEntry("Packet sent failed: " + ex.ToString(), EventLogEntryType.Error);
 			}
 		}
@@ -52,7 +66,6 @@ namespace WinLLDPService
 		/// </summary>
 		protected override void Dispose(bool disposing)
 		{
-			// TODO: Add cleanup code here (if required)
 			base.Dispose(disposing);
 		}
 		

@@ -13,10 +13,12 @@ namespace WinLLDPService
 	{
 		public bool Run()
 		{
-			
+
+            // Get list of network adapters			
 			List<string> upLinks = GetUpAdaptersIds();
 			
 			if (upLinks.Count > 0) {
+				// There are NIC(s) connected to network, send LLDP packet(s)
 				SendLLDP(upLinks);
 			}
 			
@@ -24,7 +26,7 @@ namespace WinLLDPService
 		}
 		
 		/// <summary>
-		/// Fetch adapters which state is UP (connected to network)
+		/// Fetch adapter IDs which state is UP (connected to network and is not loopback (127.0.0.1) device)
 		/// </summary>
 		/// <returns></returns>
 		private List<string> GetUpAdaptersIds()
@@ -42,6 +44,10 @@ namespace WinLLDPService
 			return upLinks;
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		private void SendLLDP(List<string> upLinks)
 		{
 			
@@ -59,6 +65,7 @@ namespace WinLLDPService
 
 						
 						if (!device.Opened) {
+							// Couldn't open network adapter, skip
 							continue;
 						}
 						
@@ -74,6 +81,10 @@ namespace WinLLDPService
 			
 		}
 		
+		/// <summary>
+		/// Get adapter info and send LLDP packet if that adapter has IP(s)
+		/// </summary>
+		/// <returns></returns>
 		private void GetAdapterInfo(PcapDevice device)
 		{
 			var ips = device.Interface.Addresses;
@@ -81,6 +92,7 @@ namespace WinLLDPService
 			foreach (var ip in ips) {
 				
 				if (ip.Addr.ipAddress != null) {
+					// Send LLDP packet through specific adapter
 					SendLLDPPacket(device, ip.Addr.ipAddress);
 				}
 						
@@ -88,6 +100,14 @@ namespace WinLLDPService
 			
 		}
 		
+		/// <summary>
+		/// List possible LLDP capabilities such as:
+		/// - Bridge 
+		/// - Router 
+		/// - WLAN Access Point 
+		/// - Station 
+		/// </summary>
+		/// <returns>List<CapabilityOptions></returns>
 		private List<CapabilityOptions> GetCapabilityOptions()
 		{
 			List<CapabilityOptions> capabilities = new List<CapabilityOptions>();
@@ -97,9 +117,12 @@ namespace WinLLDPService
 			capabilities.Add(CapabilityOptions.StationOnly);
 			
 			return capabilities;
-			
 		}
 				
+		/// <summary>
+		/// Get LLDP capabilities as bits
+		/// </summary>
+		/// <returns>ushort</returns>
 		private ushort GetCapabilityOptionsBits(List<CapabilityOptions> capabilities)
 		{
 			ushort caps = 0;
@@ -110,11 +133,13 @@ namespace WinLLDPService
 			}
 			
 			return caps;
-			
 		}
 				
 				
-		
+		/// <summary>
+		/// Send the actual LLDP packet to the switch
+		/// </summary>
+		/// <returns></returns>
 		private void SendLLDPPacket(PcapDevice device, IPAddress ipAddress)
 		{
 			var managementAddressObjectIdentifier = "Management";
@@ -134,7 +159,7 @@ namespace WinLLDPService
 
 			uint managementAddressInterfaceNumber = 0x44060124;
 			
-			 
+			// Constuct LLDP packet 
 			 
 			var valuesLLDPPacket = new LLDPPacket();
 			valuesLLDPPacket.TlvCollection.Add(new ChassisID(ChassisSubTypes.MACAddress, device.MacAddress));
@@ -146,7 +171,7 @@ namespace WinLLDPService
 			valuesLLDPPacket.TlvCollection.Add(new SystemCapabilities(expectedSystemCapabilitiesCapability, expectedSystemCapabilitiesEnabled));
 			valuesLLDPPacket.TlvCollection.Add(new ManagementAddress(new NetworkAddress(ipAddress), InterfaceNumbering.SystemPortNumber, managementAddressInterfaceNumber, managementAddressObjectIdentifier));
 			
-			// End
+			// End of LLDP packet
 			valuesLLDPPacket.TlvCollection.Add(new EndOfLLDPDU());
 			
 		
@@ -158,8 +183,11 @@ namespace WinLLDPService
 			packet.PayloadData = valuesLLDPPacket.Bytes;
 		
 			try {
+				// Try to send the packet to network
 				device.SendPacket(packet);
 			} catch (DeviceNotReadyException e) {
+				// Device was not ready (middle of initializing, cable just plugged in or something else)
+				// Ignore and try again later
 				return;
 			}
 			
