@@ -159,8 +159,8 @@ namespace WinLLDPService
 
 			uint managementAddressInterfaceNumber = 0x44060124;
 			
-			// Constuct LLDP packet 
 			 
+			// Constuct LLDP packet 
 			var valuesLLDPPacket = new LLDPPacket();
 			valuesLLDPPacket.TlvCollection.Add(new ChassisID(ChassisSubTypes.MACAddress, device.MacAddress));
 			valuesLLDPPacket.TlvCollection.Add(new PortID(PortSubTypes.MACAddress, device.MacAddress));
@@ -184,6 +184,7 @@ namespace WinLLDPService
 		
 			try {
 				// Try to send the packet to network
+				// If it fails, Windows Event Log will log the error(s)
 				device.SendPacket(packet);
 			} catch (DeviceNotReadyException e) {
 				// Device was not ready (middle of initializing, cable just plugged in or something else)
