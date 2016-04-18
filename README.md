@@ -1,14 +1,22 @@
 # WinLLDPService
-Small LLDP Windows Service
+Small LLDP Windows Service. 
 
-Used by switches to list network devices. https://en.wikipedia.org/wiki/Link_Layer_Discovery_Protocol
+Used by network switches to list network devices - https://en.wikipedia.org/wiki/Link_Layer_Discovery_Protocol
 
-Download .msi installer from homepage.
+Sends LLDP packets to switch. Switch must have LLDP capability. It **doesn't** query switches' internal LLDP data. Errors are logged to Windows Event Log.
+
+See homepage for more information and download `.msi` installer - https://raspi.github.io/winlldpservice/
 
 Uses 
- * SharpPcap
- * Packet.NET
- 
-Uses WiX to build .msi installer package.
 
-License: MIT
+* SharpPcap - https://www.nuget.org/packages/SharpPcap/
+* Packet.NET - https://www.nuget.org/packages/PacketDotNet/
+
+Programmed in C#
+ 
+# How to build
+Uses WiX to build .msi installer package. See `build` directory for more information.
+
+# License
+MIT
+
