@@ -1,8 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-# SharpDevelop 5.1
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinLLDPService", "WinLLDPService\WinLLDPService.csproj", "{1F3F8A7F-A8AF-4DA8-A769-F3059028B22F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LLDPBase", "WinLLDPService\LLDPBase\LLDPBase.csproj", "{57B661AC-C800-4E00-BE9D-52CE58E1F0F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LLDPCliDev", "WinLLDPService\CLI\LLDPCliDev.csproj", "{9D2800E7-C202-42C1-B43A-D730D825F587}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,5 +19,16 @@ Global
 		{1F3F8A7F-A8AF-4DA8-A769-F3059028B22F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F3F8A7F-A8AF-4DA8-A769-F3059028B22F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F3F8A7F-A8AF-4DA8-A769-F3059028B22F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57B661AC-C800-4E00-BE9D-52CE58E1F0F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57B661AC-C800-4E00-BE9D-52CE58E1F0F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57B661AC-C800-4E00-BE9D-52CE58E1F0F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57B661AC-C800-4E00-BE9D-52CE58E1F0F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D2800E7-C202-42C1-B43A-D730D825F587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D2800E7-C202-42C1-B43A-D730D825F587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D2800E7-C202-42C1-B43A-D730D825F587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D2800E7-C202-42C1-B43A-D730D825F587}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

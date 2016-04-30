@@ -5,7 +5,7 @@ using System.Timers;
 
 namespace WinLLDPService
 {
-	public class WinLLDPService : ServiceBase
+    public class WinLLDPService : ServiceBase
 	{
 		public const string MyServiceName = "WinLLDPService";
 		
@@ -34,7 +34,7 @@ namespace WinLLDPService
 			EventLog.Source = this.ServiceName;
 			EventLog.Log = "Application";
 			
-			if (!EventLog.SourceExists(EventLog.Source)) {
+			if (false == EventLog.SourceExists(EventLog.Source)) {
 				// Create Windows Event Log source if it doesn't exist
 				EventLog.CreateEventSource(EventLog.Source, this.EventLog.Log);
 			}
@@ -83,6 +83,7 @@ namespace WinLLDPService
 		protected override void OnStop()
 		{
 			timer.Stop();
+            run.Stop();
 		}
 	}
 }

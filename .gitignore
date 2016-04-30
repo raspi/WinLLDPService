@@ -42,8 +42,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-WinLLDPService/bin/*
-WinLLDPService/obj/*
+**/bin/*
+**/obj/*
 WinLLDPService/build/paths.bat
 packages/*
 !packages/*.config
+.vs

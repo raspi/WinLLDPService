@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ServiceProcess;
-using System.Text;
+﻿using System.ServiceProcess;
 
 namespace WinLLDPService
 {
-	static class Program
+    static class ServiceMain
 	{
 		/// <summary>
 		/// This method starts the service.

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Configuration.Install;
 using System.ServiceProcess;
 
 namespace WinLLDPService
 {
-	[RunInstaller(true)]
+    [RunInstaller(true)]
 	public class ProjectInstaller : Installer
 	{
 		private ServiceProcessInstaller serviceProcessInstaller;
