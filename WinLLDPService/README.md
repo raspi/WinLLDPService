@@ -1,6 +1,8 @@
 # Developing WinLLDPService
 
-Programmed in C#
+Programmed in C#.
+
+Use `Cli` subproject to quickly develop this project.
 
 Uses:
 
@@ -9,3 +11,9 @@ Uses:
 
 # How to build installer:
 Uses WiX to build .msi installer package. See `build` directory for more information.
+
+# How to debug
+* Visual Studio's own debugging tools
+* WireShark
+* windump
+* Switches' own possible LLDP debug logs
