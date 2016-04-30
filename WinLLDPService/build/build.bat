@@ -1,5 +1,7 @@
 @echo off
 echo [x] Applying paths..
+if not exist "paths.bat" goto error
+
 call paths.bat
 
 echo.

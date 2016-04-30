@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 
 <?define ProductShortName = "WinLLDPService" ?>
+<?define Manufacturer = "Pekka Järvinen" ?>
 
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" >
 
-	<Product Name='$(var.ProductShortName)' Manufacturer='Pekka Järvinen' Version='1.0.0' Language='1033' Codepage='1252' Id='408ea9f0-8118-4f0e-b618-62dd6b7dedb5' UpgradeCode='f97f19d5-ae5a-499c-b00b-1abcec53e393' >
+	<Product Name='$(var.ProductShortName)' Manufacturer='$(var.Manufacturer)' Version='1.0.0' Language='1033' Codepage='1252' Id='408ea9f0-8118-4f0e-b618-62dd6b7dedb5' UpgradeCode='f97f19d5-ae5a-499c-b00b-1abcec53e393'>
 
-		<Package Id='*' Keywords='Installer' Description="$(var.ProductShortName) Installer" InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+		<Package Id='*' Keywords='Installer' Description="$(var.ProductShortName) Installer" InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' InstallPrivileges='elevated' InstallScope='perMachine' Manufacturer='$(var.Manufacturer)' Comments='$(var.ProductShortName)' />
 
-		<Media Id='1' Cabinet='Data.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" />
+		<Media Id='1' Cabinet='Data.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
 		<Property Id='DiskPrompt' Value="$(var.ProductShortName) Installation [1]" />
 
 		<Condition Message="You must have Administrative rights on this machine to install [ProductName].">
@@ -60,7 +61,11 @@
 						<File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='..\bin\Release\SharpPcap.dll'  KeyPath='yes' />
 					</Component>
 
-				</Directory>
+          <Component Id='DLLLLDPBase' Guid='a9370c06-e330-4f9a-9ab5-dc5b8d5c60da'>
+            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='..\bin\Release\LLDPBase.dll'  KeyPath='yes' />
+          </Component>
+
+        </Directory>
 			</Directory>
 
 			<Directory Id="ProgramMenuFolder" Name="Programs">
@@ -78,6 +83,7 @@
 			<ComponentRef Id='MainExecutable' />
 			<ComponentRef Id='DLLPacketDotNet' />
 			<ComponentRef Id='DLLSharpPcap' />
+      <ComponentRef Id='DLLLLDPBase' />
 			<ComponentRef Id='ProgramMenuDir' />
 		</Feature>
 
