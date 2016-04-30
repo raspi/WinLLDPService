@@ -48,3 +48,4 @@ WinLLDPService/build/paths.bat
 packages/*
 !packages/*.config
 .vs
+*.log
