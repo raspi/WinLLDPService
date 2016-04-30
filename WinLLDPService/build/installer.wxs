@@ -2,96 +2,106 @@
 
 <?define ProductShortName = "WinLLDPService" ?>
 <?define Manufacturer = "Pekka Järvinen" ?>
+<?define HomepageURL = "https://raspi.github.io/projects/winlldpservice/" ?>
 
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" >
 
-	<Product Name='$(var.ProductShortName)' Manufacturer='$(var.Manufacturer)' Version='1.0.0' Language='1033' Codepage='1252' Id='408ea9f0-8118-4f0e-b618-62dd6b7dedb5' UpgradeCode='f97f19d5-ae5a-499c-b00b-1abcec53e393'>
 
-		<Package Id='*' Keywords='Installer' Description="$(var.ProductShortName) Installer" InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' InstallPrivileges='elevated' InstallScope='perMachine' Manufacturer='$(var.Manufacturer)' Comments='$(var.ProductShortName)' />
+  <Product Name='$(var.ProductShortName)' Manufacturer='$(var.Manufacturer)' Version='1.0.0' Language='1033' Codepage='1252' Id='408ea9f0-8118-4f0e-b618-62dd6b7dedb5' UpgradeCode='f97f19d5-ae5a-499c-b00b-1abcec53e393'>
 
-		<Media Id='1' Cabinet='Data.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
-		<Property Id='DiskPrompt' Value="$(var.ProductShortName) Installation [1]" />
+    <Package Id='*' Keywords='Installer' Description="$(var.ProductShortName) Installer" InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' InstallPrivileges='elevated' InstallScope='perMachine' Manufacturer='$(var.Manufacturer)' Comments='$(var.ProductShortName)' />
 
-		<Condition Message="You must have Administrative rights on this machine to install [ProductName].">
-			<![CDATA[ Privileged  ]]>
-		</Condition>		
+    <Property Id='ARPCOMMENTS'>$(var.HomepageURL)</Property>
+    <Property Id='ARPCONTACT'>$(var.HomepageURL)</Property>
+    <Property Id='ARPHELPLINK'>$(var.HomepageURL)</Property>
+    <Property Id='ARPURLINFOABOUT'>$(var.HomepageURL)</Property>
+    <Property Id='ARPURLUPDATEINFO'>$(var.HomepageURL)</Property>
 
-		<!-- Ensure .Net 4.0 is installed -->
-		<PropertyRef Id="NETFRAMEWORK40FULL" />
-		<Condition Message="This setup requires the .NET Framework 4.0 to be installed.">
-			<![CDATA[ Installed OR NETFRAMEWORK40FULL ]]>
-		</Condition>
+    <Media Id='1' Cabinet='Data.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
+    <Property Id='DiskPrompt' Value="$(var.ProductShortName) Installation [1]" />
 
-		<!-- Check WinPcap -->
-		<Property Id="WINPCAPISINSTALLED">
-			<RegistrySearch Id="RegistrySearchWinPcapKey" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" /> 
-		</Property>	
+    <Condition Message="You must have Administrative rights on this machine to install [ProductName].">
+      <![CDATA[ Privileged  ]]>
+    </Condition>
 
-		<Property Id="WINPCAPMAJORVER">
-			<RegistrySearch Id="RegistrySearchWinPcapMajor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMajor" Type="raw" />
-		</Property>	
+    <!-- Ensure .Net 4.0 is installed -->
+    <PropertyRef Id="NETFRAMEWORK40FULL" />
+    <Condition Message="This setup requires the .NET Framework 4.0 to be installed.">
+      <![CDATA[ Installed OR NETFRAMEWORK40FULL ]]>
+    </Condition>
 
-		<Property Id="WINPCAPMINORVER">
-			<RegistrySearch Id="RegistrySearchWinPcapMinor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMinor" Type="raw" />
-		</Property>	
+    <!-- Check WinPcap -->
+    <Property Id="WINPCAPISINSTALLED">
+      <RegistrySearch Id="RegistrySearchWinPcapKey" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" />
+    </Property>
 
-		<Condition Message="This setup requires WinPcap to be installed.">
-			<![CDATA[ NOT WINPCAPISINSTALLED OR ( 4 > WINPCAPMAJORVER AND 1 > WINPCAPMINORVER) ]]>
-		</Condition>
+    <Property Id="WINPCAPMAJORVER">
+      <RegistrySearch Id="RegistrySearchWinPcapMajor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMajor" Type="raw" />
+    </Property>
 
-		
-		<!-- Install dir -->
-		<Directory Id='TARGETDIR' Name='SourceDir'>
-			<Directory Id='ProgramFilesFolder' Name='PFiles'>
-				<Directory Id='INSTALLDIR' Name='$(var.ProductShortName)'>
+    <Property Id="WINPCAPMINORVER">
+      <RegistrySearch Id="RegistrySearchWinPcapMinor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMinor" Type="raw" />
+    </Property>
 
-					<!-- Main EXE file -->
-					<Component Id='MainExecutable' Guid='9a017631-7016-4f0f-a2bb-866be992ea9a'>
-						<File Id='ServiceEXE' Name='WinLLDPService.exe' DiskId='1' Source='..\bin\Release\WinLLDPService.exe'  KeyPath='yes'/>         
-						<ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="$(var.ProductShortName)" DisplayName="$(var.ProductShortName)" Description="$(var.ProductShortName)" Start="auto" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" />
-						<ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="WinLLDPService" Wait="yes" />
-					</Component>
+    <Condition Message="This setup requires WinPcap to be installed.">
+      <![CDATA[ NOT WINPCAPISINSTALLED OR ( 4 > WINPCAPMAJORVER AND 1 > WINPCAPMINORVER) ]]>
+    </Condition>
 
-					<!-- DLLs -->
-					<Component Id='DLLPacketDotNet' Guid='be08a51d-3baa-4752-8c29-f2011ee80e28'>
-						<File Id='PacketDotNet' Name='PacketDotNet.dll' DiskId='1' Source='..\bin\Release\PacketDotNet.dll'  KeyPath='yes' />
-					</Component>
 
-					<Component Id='DLLSharpPcap' Guid='c70b8961-3a39-47e1-b400-c5cffa739d8d'>
-						<File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='..\bin\Release\SharpPcap.dll'  KeyPath='yes' />
-					</Component>
+    <!-- Install dir -->
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='INSTALLDIR' Name='$(var.ProductShortName)'>
+
+          <!-- Main EXE file -->
+          <Component Id='MainExecutable' Guid='9a017631-7016-4f0f-a2bb-866be992ea9a'>
+            <File Id='ServiceEXE' Name='WinLLDPService.exe' DiskId='1' Source='..\bin\Release\WinLLDPService.exe'  KeyPath='yes'/>
+            <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="$(var.ProductShortName)" DisplayName="$(var.ProductShortName)" Description="$(var.ProductShortName) $(var.HomepageURL) $(var.Manufacturer)" Start="auto" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Interactive="no" Vital="yes" />
+            <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="WinLLDPService" Wait="yes" />
+          </Component>
+
+          <!-- DLLs -->
+          <Component Id='DLLPacketDotNet' Guid='be08a51d-3baa-4752-8c29-f2011ee80e28'>
+            <File Id='PacketDotNet' Name='PacketDotNet.dll' DiskId='1' Source='..\bin\Release\PacketDotNet.dll' KeyPath='yes' Vital="yes" />
+          </Component>
+
+          <Component Id='DLLSharpPcap' Guid='c70b8961-3a39-47e1-b400-c5cffa739d8d'>
+            <File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='..\bin\Release\SharpPcap.dll'  KeyPath='yes' Vital="yes" />
+          </Component>
 
           <Component Id='DLLLLDPBase' Guid='a9370c06-e330-4f9a-9ab5-dc5b8d5c60da'>
-            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='..\bin\Release\LLDPBase.dll'  KeyPath='yes' />
+            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='..\bin\Release\LLDPBase.dll'  KeyPath='yes' Vital="yes" />
           </Component>
 
         </Directory>
-			</Directory>
+      </Directory>
 
-			<Directory Id="ProgramMenuFolder" Name="Programs">
-				<Directory Id="ProgramMenuDir" Name="$(var.ProductShortName)">
-					<Component Id="ProgramMenuDir" Guid="77b90abc-4390-4a35-a580-49259ea1c216">
-						<RemoveFolder Id='ProgramMenuDir' On='uninstall' />
-						<RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
-					</Component>
-				</Directory>
-			</Directory>
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="$(var.ProductShortName)">
+          <Component Id="ProgramMenuDir" Guid="77b90abc-4390-4a35-a580-49259ea1c216">
+            <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+            <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+          </Component>
+        </Directory>
+      </Directory>
 
-		</Directory>
+    </Directory>
 
-		<Feature Id='Complete' Level='1' ConfigurableDirectory='INSTALLDIR' Title='$(var.ProductShortName)' Description='$(var.ProductShortName)' Display='expand'>
-			<ComponentRef Id='MainExecutable' />
-			<ComponentRef Id='DLLPacketDotNet' />
-			<ComponentRef Id='DLLSharpPcap' />
+    <Feature Id='Complete' Level='1' ConfigurableDirectory='INSTALLDIR' Title='$(var.ProductShortName)' Description='$(var.ProductShortName)' Display='expand'>
+      <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='DLLPacketDotNet' />
+      <ComponentRef Id='DLLSharpPcap' />
       <ComponentRef Id='DLLLLDPBase' />
-			<ComponentRef Id='ProgramMenuDir' />
-		</Feature>
+      <ComponentRef Id='ProgramMenuDir' />
+    </Feature>
 
-		<Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
-		<UIRef Id="WixUI_Mondo" />
-		<UIRef Id="WixUI_ErrorProgressText" />	
+    <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
+    
+    <UIRef Id="WixUI_Mondo" />
+    <UIRef Id="WixUI_ErrorProgressText" />
 
-		<WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
+    <WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
 
-	</Product>
+  </Product>
+  
 </Wix>
