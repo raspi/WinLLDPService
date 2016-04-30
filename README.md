@@ -1,4 +1,6 @@
 # WinLLDPService
+[![Build Status](https://travis-ci.org/raspi/WinLLDPService.svg?branch=master)](https://travis-ci.org/raspi/WinLLDPService)
+
 Small LLDP Windows Service. 
 
 Used by network switches to list network devices - https://en.wikipedia.org/wiki/Link_Layer_Discovery_Protocol
