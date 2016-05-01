@@ -1,11 +1,12 @@
 Generate MSI installer from Release .exe. 
 
-Rename paths.bat.example to paths.bat and set proper PATH environmental variables for WiX.
+Rename `paths.ps1.example` to `paths.ps1` and set proper PATH environmental variables for WiX.
 
-Build Release version with MonoDevelop first.
+Build Release version with Visual Studio first.
 
-WiX 
-- http://wix.sourceforge.net/
-- http://wixtoolset.org/
+WiX:
+ 
+* http://wix.sourceforge.net/
+* http://wixtoolset.org/
 
-Run build.bat to generate MSI file.
+Run `build.ps1 `to generate `.msi` installer file.

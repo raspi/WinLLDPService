@@ -1,2 +1,0 @@
-REM append WiX path to environmental variable
-SET PATH=%PATH%;"%ProgramFiles(x86)%\WiX Toolset v3.10\bin"
