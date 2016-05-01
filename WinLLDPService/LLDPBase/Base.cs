@@ -147,7 +147,7 @@ namespace WinLLDPService
         /// <returns></returns>
         static string ReadableSize(double size, int unit = 0)
         {
-            string[] units = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            string[] units = { "b", "Kb", "Mb", "Gb", "Tb", "Pb", "Eb", "Zb", "Yb" };
 
             while (size >= 1000)
             {
