@@ -42,6 +42,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+**/*.tmp
+
 **/bin/*
 **/obj/*
 WinLLDPService/build/paths.ps1
