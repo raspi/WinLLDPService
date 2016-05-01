@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.Win32;
+using System.Management;
 
 /// <summary>
 /// Base classes needed to 
@@ -56,6 +57,14 @@ namespace WinLLDPService
             // Open network devices for sending raw packets
             OpenDevices();
 
+            // Get list of users
+            List<string> users = GetUsers();
+
+            if (users.Count == 0)
+            {
+                Debug.WriteLine("No users found.", EventLogEntryType.Error);
+            }
+
             // Wait to open devices
             System.Threading.Thread.Sleep(Convert.ToInt32(TimeSpan.FromSeconds(1).TotalMilliseconds));
 
@@ -63,8 +72,7 @@ namespace WinLLDPService
             PacketInfo pinfo = new PacketInfo();
             pinfo.OperatingSystem = FriendlyName().Trim();
             pinfo.OperatingSystemVersion = Environment.OSVersion.ToString().Trim();
-            pinfo.Domain = Environment.UserDomainName;
-            pinfo.Username = Environment.UserName;
+            pinfo.Username = String.Join(", ", users).Trim().TrimEnd(',');
             pinfo.Uptime = GetTickCount64().ToString();
 
 
@@ -109,9 +117,53 @@ namespace WinLLDPService
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>
-        private int getCIDRFromIPAddress(IPAddress ip)
+        private int getCIDRFromIPMaskAddress(IPAddress ip)
         {
             return Convert.ToString(BitConverter.ToInt32(ip.GetAddressBytes(), 0), 2).ToCharArray().Count(x => x == '1');
+        }
+
+        /// <summary>
+        /// Get list of users
+        /// 
+        /// We cant use Environment.UserName or System.Security.Principal.WindowsIdentity.GetCurrent().Name 
+        /// because those return ("SYSTEM" or "NT AUTHORITY\SYSTEM").
+        /// This is because it is reading Windows Service user, not logged in user(s).
+        /// 
+        /// So different approach finding correct logged in user(s) have to be used.
+        /// </summary>
+        /// <returns></returns>
+        private List<string> GetUsers()
+        {
+            List<string> users = new List<string>();
+
+            // Find all explorer.exe processes
+            foreach (Process p in Process.GetProcessesByName("explorer"))
+            {
+                foreach (ManagementObject mo in new ManagementObjectSearcher(new ObjectQuery(String.Format("SELECT * FROM Win32_Process WHERE ProcessID = '{0}'", p.Id))).Get())
+                {
+                    string[] s = new string[2];
+                    mo.InvokeMethod("GetOwner", (object[])s);
+
+                    string user = s[0].ToString();
+                    string domain = s[1].ToString();
+
+                    string tmp = user;
+
+                    if (!String.IsNullOrEmpty(domain))
+                    {
+                        tmp += @"\" + domain;
+                    }
+
+                    if (!users.Contains(tmp))
+                    {
+                        users.Add(tmp);
+                    }
+                }
+
+            }
+
+            return users;
+
         }
 
         /// <summary>
@@ -206,7 +258,6 @@ namespace WinLLDPService
             systemDescription.Add("OS", pinfo.OperatingSystem);
             systemDescription.Add("Ver", pinfo.OperatingSystemVersion);
             systemDescription.Add("User", pinfo.Username);
-            systemDescription.Add("Domain", pinfo.Domain);
             systemDescription.Add("Uptime", pinfo.Uptime);
 
             // Port description
@@ -280,7 +331,7 @@ namespace WinLLDPService
                     .Where(
                       w => w.IPv4Mask.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork
                     )
-                    .Select(x => getCIDRFromIPAddress(x.IPv4Mask))
+                    .Select(x => getCIDRFromIPMaskAddress(x.IPv4Mask))
                     .ToArray()
                     ;
 
@@ -538,7 +589,7 @@ namespace WinLLDPService
         }
 
         /// <summary>
-        /// Get Windows "friendly name" for example "Windows 7 Ultimate edition"
+        /// Get OS "friendly name" for example "Windows 7 Ultimate edition"
         /// </summary>
         /// <returns></returns>
         public string FriendlyName()
@@ -548,8 +599,7 @@ namespace WinLLDPService
 
             if (!String.IsNullOrEmpty(ProductName))
             {
-                return (ProductName.StartsWith("Microsoft") ? "" : "Microsoft ") + ProductName +
-                            (CSDVersion != "" ? " " + CSDVersion : "");
+                return (ProductName.StartsWith("Microsoft") ? "" : "Microsoft ") + ProductName + (CSDVersion != "" ? " " + CSDVersion : "");
             }
 
             return "?";
