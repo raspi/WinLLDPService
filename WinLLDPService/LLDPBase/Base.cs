@@ -61,8 +61,8 @@ namespace WinLLDPService
 
             // Get information which doesn't change often or doesn't need to be 100% accurate in realtime when iterating through adapters
             PacketInfo pinfo = new PacketInfo();
-            pinfo.OperatingSystem = FriendlyName();
-            pinfo.OperatingSystemVersion = Environment.OSVersion.ToString();
+            pinfo.OperatingSystem = FriendlyName().Trim();
+            pinfo.OperatingSystemVersion = Environment.OSVersion.ToString().Trim();
             pinfo.Domain = Environment.UserDomainName;
             pinfo.Username = Environment.UserName;
             pinfo.Uptime = GetTickCount64().ToString();
@@ -71,9 +71,6 @@ namespace WinLLDPService
             foreach (NetworkInterface adapter in adapters)
             {
                 Debug.WriteLine(String.Format("Adapter {0}:", adapter.Name), EventLogEntryType.Information);
-                //Debug.WriteLine(String.Format("{0}", adapter.NetworkInterfaceType.ToString()), EventLogEntryType.Information);
-                //Debug.WriteLine(String.Format("{0}", adapter.Speed.ToString()), EventLogEntryType.Information);
-                //Debug.WriteLine(String.Format("{0}", adapter.GetIPProperties().), EventLogEntryType.Information);
 
                 try
                 {
@@ -107,9 +104,14 @@ namespace WinLLDPService
             CloseDevices();
         }
 
+        /// <summary>
+        /// Convert network mask to CIDR notation
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
         private int getCIDRFromIPAddress(IPAddress ip)
         {
-            return Convert.ToString(ip.GetHashCode(), 2).ToCharArray().Count(x => x == '1');
+            return Convert.ToString(BitConverter.ToInt32(ip.GetAddressBytes(), 0), 2).ToCharArray().Count(x => x == '1');
         }
 
         /// <summary>
