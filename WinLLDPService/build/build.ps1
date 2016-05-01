@@ -27,8 +27,8 @@ if(![System.IO.File]::Exists($paths_file)) {
 & $paths_file
 
 # Remove old installer file if it exists
-if([System.IO.File]::Exists($output_installer_file)) {
-  Remove-Item $output_installer_file
+if([System.IO.File]::Exists("$output_installer_file")) {
+  Remove-Item "$output_installer_file"
 }
 
 Write-Host "Running WiX candle.."
