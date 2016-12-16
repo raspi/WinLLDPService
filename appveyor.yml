@@ -2,6 +2,8 @@ version: "{build}"
 
 os: Visual Studio 2015
 
+configuration: Release
+
 platform:
   - x86
   - x64
@@ -18,3 +20,10 @@ build:
   
 deploy:
 - provider: Local
+
+matrix:
+  allow_failures:
+    - platform: x86
+      configuration: Debug
+    - platform: x64
+      configuration: Debug
