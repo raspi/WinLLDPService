@@ -10,7 +10,6 @@ branches:
   only:
     - master
 
-build: on
 test: off
 
 build:
