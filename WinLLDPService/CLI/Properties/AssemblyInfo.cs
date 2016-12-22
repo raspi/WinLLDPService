@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("-")]
 [assembly: AssemblyProduct("LLDPSender")]
-[assembly: AssemblyCopyright("Pekka Järvinen 2016-")]
+[assembly: AssemblyCopyright("Pekka Järvinen 2015-")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
