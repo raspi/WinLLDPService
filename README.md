@@ -1,6 +1,7 @@
 # WinLLDPService
 [![Build Status](https://travis-ci.org/raspi/WinLLDPService.svg?branch=master)](https://travis-ci.org/raspi/WinLLDPService)
 [![Build status](https://ci.appveyor.com/api/projects/status/7mhyl2fvasumvpqv?svg=true)](https://ci.appveyor.com/project/raspi/winlldpservice)
+[![Github All Releases](https://img.shields.io/github/downloads/raspi/WinLLDPService/total.svg)]()
 
 Small LLDP Windows Service. 
 
