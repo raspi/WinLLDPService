@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WinLLDPService")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Small LLDP service")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WinLLDPService")]
-[assembly: AssemblyCopyright("Copyright 2015")]
+[assembly: AssemblyCopyright("Pekka Järvinen 2016-")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
