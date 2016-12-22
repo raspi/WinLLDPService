@@ -12,4 +12,10 @@ WiX:
 Run `build.ps1 <arch>` to generate `.msi` installer file.
 
 Example: 
-`build.ps1 x64`
+
+    build.ps1 x64
+
+Make release to GitHub:
+
+    github_release.ps1 WinLLDPService-x64.msi
+    github_release.ps1 WinLLDPService-x86.msi
