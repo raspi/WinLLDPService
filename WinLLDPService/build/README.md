@@ -9,4 +9,7 @@ WiX:
 * http://wix.sourceforge.net/
 * http://wixtoolset.org/
 
-Run `build.ps1 `to generate `.msi` installer file.
+Run `build.ps1 <arch>` to generate `.msi` installer file.
+
+Example: 
+`build.ps1 x64`

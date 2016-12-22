@@ -2,9 +2,27 @@ param (
     [Parameter(Mandatory=$true)][string]$arch
 )
 
-Get-ChildItem -Path "$pwd/release" -Include *.* -File -Recurse | foreach { $_.Delete()}
+$release_dir = "$pwd/release"
 
-Copy-Item -Path "$pwd/../bin/$arch/Release/*" "$pwd/release/"
+if(![System.IO.Directory]::Exists("$release_dir")) {
+	Write-Host "Creating '$release_dir'"
+	Write-Host ""
+	
+	New-Item -ItemType Directory "$release_dir"
+}
+
+Write-Host "Removing old files from '$release_dir'"
+Write-Host ""
+
+Get-ChildItem -Path "$release_dir" -Include *.* -File -Recurse | foreach { $_.Delete()}
+
+$source_dir = "$pwd/../bin/$arch/Release/*"
+$target_dir = "$release_dir"
+
+Write-Host "Copying files from '$source_dir' -> '$target_dir'"
+Write-Host ""
+
+Copy-Item -Path "$source_dir" "$target_dir"
 
 $output_installer_file = "$pwd/WinLLDPService-$arch.msi"
 
