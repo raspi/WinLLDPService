@@ -18,7 +18,8 @@
     <Property Id='ARPURLINFOABOUT'>$(var.HomepageURL)</Property>
     <Property Id='ARPURLUPDATEINFO'>$(var.HomepageURL)</Property>
     <Property Id='ARPNOREPAIR'>1</Property> <!-- Disable "Repair" option with install -->
-
+	<Property Id="ARPPRODUCTICON" Value="icon.ico" />
+	
     <Media Id='1' Cabinet='Data.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
     <Property Id='DiskPrompt' Value="$(var.ProductShortName) Installation [1]" />
 
@@ -57,7 +58,7 @@
 
           <!-- Main EXE file -->
           <Component Id='MainExecutable' Guid='9a017631-7016-4f0f-a2bb-866be992ea9a'>
-            <File Id='ServiceEXE' Name='WinLLDPService.exe' DiskId='1' Source='..\bin\Release\WinLLDPService.exe'  KeyPath='yes'/>
+            <File Id='ServiceEXE' Name='WinLLDPService.exe' DiskId='1' Source='release\WinLLDPService.exe'  KeyPath='yes'/>
             <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="$(var.ProductShortName)" DisplayName="$(var.ProductShortName)" Description="$(var.ProductShortName) by $(var.Manufacturer) Version: $(var.VersionNumber) Homepage: $(var.HomepageURL)" Start="auto" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Interactive="no" Vital="yes">
               <util:ServiceConfig FirstFailureActionType='restart' SecondFailureActionType='restart' ThirdFailureActionType='restart' RestartServiceDelayInSeconds='300' ResetPeriodInDays='30' />
             </ServiceInstall>
@@ -66,15 +67,15 @@
 
           <!-- DLLs -->
           <Component Id='DLLPacketDotNet' Guid='be08a51d-3baa-4752-8c29-f2011ee80e28'>
-            <File Id='PacketDotNet' Name='PacketDotNet.dll' DiskId='1' Source='..\bin\Release\PacketDotNet.dll' KeyPath='yes' Vital="yes" />
+            <File Id='PacketDotNet' Name='PacketDotNet.dll' DiskId='1' Source='release\PacketDotNet.dll' KeyPath='yes' Vital="yes" />
           </Component>
 
           <Component Id='DLLSharpPcap' Guid='c70b8961-3a39-47e1-b400-c5cffa739d8d'>
-            <File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='..\bin\Release\SharpPcap.dll'  KeyPath='yes' Vital="yes" />
+            <File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='release\SharpPcap.dll'  KeyPath='yes' Vital="yes" />
           </Component>
 
           <Component Id='DLLLLDPBase' Guid='a9370c06-e330-4f9a-9ab5-dc5b8d5c60da'>
-            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='..\bin\Release\LLDPBase.dll'  KeyPath='yes' Vital="yes" />
+            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='release\LLDPBase.dll'  KeyPath='yes' Vital="yes" />
           </Component>
 
         </Directory>
@@ -108,6 +109,8 @@
 
     <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
 
+	<Icon Id="icon.ico" SourceFile="..\icon.ico"/>
+	
   </Product>
 
 </Wix>

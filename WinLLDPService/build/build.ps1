@@ -1,6 +1,14 @@
-$output_installer_file = "$pwd/WinLLDPService-installer.msi"
+param (
+    [Parameter(Mandatory=$true)][string]$arch
+)
 
-Write-Host "Building installer.."
+Get-ChildItem -Path "$pwd/release" -Include *.* -File -Recurse | foreach { $_.Delete()}
+
+Copy-Item -Path "$pwd/../bin/$arch/Release/*" "$pwd/release/"
+
+$output_installer_file = "$pwd/WinLLDPService-$arch.msi"
+
+Write-Host "Building installer '$output_installer_file' .."
 Write-Host ""
 
 # Generate WiX version .wxi include file for .wxs 
@@ -23,7 +31,7 @@ $paths_file = "$pwd/paths.ps1"
 Write-Host ("Calling '{0}' to set environmental variables.." -f $paths_file)
 
 if(![System.IO.File]::Exists("$paths_file")) {
-  Write-Host ("ERROR: Paths file '{0}' not found." -f $paths_file)
+  Write-Host ("ERROR: Paths file '{0}' not found. Rename or copy .example file to .ps1 file." -f $paths_file)
   $null = [System.Console]::ReadKey()
   Exit 1
 }

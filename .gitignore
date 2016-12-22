@@ -48,6 +48,7 @@ Temporary Items
 **/obj/*
 WinLLDPService/build/paths.ps1
 WinLLDPService/build/*.tmp
+WinLLDPService/build/release/*
 packages/*
 !packages/*.config
 .vs
