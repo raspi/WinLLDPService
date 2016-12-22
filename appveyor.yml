@@ -14,6 +14,9 @@ branches:
 
 test: off
 
+before_build:
+  - cmd: nuget restore
+
 build:
   parallel: true
   verbosity: detailed
@@ -27,3 +30,6 @@ matrix:
       configuration: Debug
     - platform: x64
       configuration: Debug
+
+cache:
+  - packages -> **\packages.config
