@@ -21,9 +21,6 @@ build:
   parallel: true
   verbosity: detailed
   
-deploy:
-- provider: Local
-
 matrix:
   allow_failures:
     - platform: x86
