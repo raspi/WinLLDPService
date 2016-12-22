@@ -29,16 +29,16 @@ namespace WinLLDPService.CLI
             TextWriterTraceListener writer = new TextWriterTraceListener(System.Console.Out);
             Debug.Listeners.Add(writer);
 
-            run = new WinLLDP();
+            run = new WinLLDP(OsInfo.GetStaticInfo());
 
             // Send first packet immediately
-            sendPacket();
+            SendPacket();
 
             // Run the LLDP packet sender every X seconds
             Debug.WriteLine("Starting timer", EventLogEntryType.Information);
             timer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
             timer.AutoReset = true;
-            timer.Elapsed += triggerEvent;
+            timer.Elapsed += TriggerEvent;
             timer.Start();
 
             // Wait for keypress
@@ -52,12 +52,12 @@ namespace WinLLDPService.CLI
         /// <summary>
         /// Main method which is ran every X seconds which is controlled by timer set up in Main()  
         /// </summary>
-        private static void triggerEvent(object source, ElapsedEventArgs ea)
+        private static void TriggerEvent(object source, ElapsedEventArgs ea)
         {
-            sendPacket();
+            SendPacket();
         }
 
-        private static void sendPacket() {
+        private static void SendPacket() {
             Debug.IndentLevel = 0;
 
             try

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace WinLLDPService
+﻿namespace WinLLDPService
 {
     /// <summary>
     /// 
@@ -23,13 +18,18 @@ namespace WinLLDPService
         public string OperatingSystemVersion { get; set; }
 
         /// <summary>
-        /// Username and domain if machine is joined in domain
+        /// Username(s) and domain(s) if machine is joined in domain
         /// </summary>
         public string Username { get; set; }
 
         /// <summary>
-        /// Uptime in seconds
+        /// Uptime in XdXhXmXs
         /// </summary>
         public string Uptime { get; set; }
+
+        public string Tag { get; set; }
+
+        public string MachineName { get; set; }
+
     }
 }

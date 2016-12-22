@@ -5,8 +5,9 @@ using System.Timers;
 
 namespace WinLLDPService
 {
-    public class WinLLDPService : ServiceBase
+    public sealed partial class WinLLDPService : ServiceBase
     {
+
         public const string MyServiceName = "WinLLDPService";
 
         Timer timer;
@@ -25,11 +26,11 @@ namespace WinLLDPService
         /// </summary>
         private void InitializeComponent()
         {
-            run = new WinLLDP();
+
+            run = new WinLLDP(OsInfo.GetStaticInfo());
 
             ServiceName = MyServiceName;
             CanStop = true;
-
 
             EventLog.Source = ServiceName;
             EventLog.Log = "Application";
@@ -40,23 +41,28 @@ namespace WinLLDPService
                 EventLog.CreateEventSource(EventLog.Source, this.EventLog.Log);
             }
 
+            ReduceMemory();
+
             // Run the LLDP packet sender every 30 seconds
-            timer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
-            //timer = new Timer(30 * 1000);
-            timer.AutoReset = true;
-            timer.Elapsed += sendPacket;
+            timer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds)
+            {
+                AutoReset = true
+            };
+
+            timer.Elapsed += SendPacket;
         }
 
 
         /// <summary>
         /// Main method which is ran every X seconds which is controlled by timer set up in InitializeComponent()  
         /// </summary>
-        private void sendPacket(object source, ElapsedEventArgs ea)
+        private void SendPacket(object source, ElapsedEventArgs ea)
         {
             try
             {
                 // Run the LLDP packet sender  
                 run.Run();
+                ReduceMemory();
             }
             catch (Exception ex)
             {
@@ -65,6 +71,22 @@ namespace WinLLDPService
             }
         }
 
+        /// <summary>
+        /// Try to reduce memory footprint
+        /// </summary>
+        private void ReduceMemory()
+        {
+            Process pProcess = Process.GetCurrentProcess();
+
+            try
+            {
+                NativeMethods.EmptyWorkingSet(pProcess.Handle);
+            } catch (Exception ex)
+            {
+                // Log error(s) to Windows Event Log
+                EventLog.WriteEntry("Packet sent failed: " + ex.ToString(), EventLogEntryType.Error);
+            }
+        }
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
