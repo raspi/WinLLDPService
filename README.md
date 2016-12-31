@@ -3,7 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/7mhyl2fvasumvpqv?svg=true)](https://ci.appveyor.com/project/raspi/winlldpservice)
 [![Github All Releases](https://img.shields.io/github/downloads/raspi/WinLLDPService/total.svg)]()
 
-Small LLDP Windows Service. 
+Small LLDP Windows Service. For *nix operating system(s) use the excellent [lldpd](https://github.com/vincentbernat/lldpd/).
 
 Used by network switches to list network devices - https://en.wikipedia.org/wiki/Link_Layer_Discovery_Protocol
 
