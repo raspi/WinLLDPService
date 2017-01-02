@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>winlldpservice</id>
+    <version>__REPLACE__</version>
+    <packageSourceUrl>https://github.com/raspi/WinLLDPService</packageSourceUrl>
+    <owners>Pekka Järvinen</owners>
+    <title>winlldpservice (Install)</title>
+    <authors>Pekka Järvinen</authors>
+    <projectUrl>https://raspi.github.io/projects/winlldpservice/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/raspi/WinLLDPService/master/WinLLDPService/Crystal_Clear_app_kcmpci.png</iconUrl>
+    <copyright>2015- Pekka Järvinen</copyright>
+    <licenseUrl>https://github.com/raspi/WinLLDPService/raw/master/WinLLDPService/LICENSE.rtf</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/raspi/WinLLDPService</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/raspi/WinLLDPService/issues</bugTrackerUrl>
+    <tags>winlldpservice admin network device discovery lldp</tags>
+    <summary>Small LLDP Windows Service</summary>
+    <description>Small LLDP Windows Service. Used by network switches to list network devices.</description>
+    <dependencies>
+      <dependency id="winpcap" version="4.1.3" />
+      <dependency id="chocolatey-uninstall.extension" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
