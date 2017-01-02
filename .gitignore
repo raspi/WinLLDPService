@@ -53,3 +53,5 @@ packages/*
 !packages/*.config
 .vs
 *.log
+
+WinLLDPService/build/chocolatey/*.nupkg
