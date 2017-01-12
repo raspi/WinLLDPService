@@ -1,4 +1,6 @@
 # WinLLDPService
+
+[![Join the chat at https://gitter.im/raspi/WinLLDPService](https://badges.gitter.im/raspi/WinLLDPService.svg)](https://gitter.im/raspi/WinLLDPService?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/raspi/WinLLDPService.svg?branch=master)](https://travis-ci.org/raspi/WinLLDPService)
 [![Build status](https://ci.appveyor.com/api/projects/status/7mhyl2fvasumvpqv?svg=true)](https://ci.appveyor.com/project/raspi/winlldpservice)
 [![Github All Releases](https://img.shields.io/github/downloads/raspi/WinLLDPService/total.svg)]()
