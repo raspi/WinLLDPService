@@ -1,6 +1,10 @@
 language: csharp
 solution: WinLLDPService.sln
+
 install:
+  - echo $PWD
+  - echo $HOME
+  - echo $TRAVIS_BUILD_DIR
   - echo -e "#!/bin/bash\nexit 0" > $PWD/powershell
   - nuget restore WinLLDPService.sln
   
