@@ -1,3 +1,6 @@
+# Generate MSI installer
+# Give architecture as parameter
+
 param (
     [Parameter(Mandatory=$true)][string]$arch
 )
@@ -39,6 +42,13 @@ $stdErrLog = "$pwd/vergen-stderr.log"
 $stdOutLog = "$pwd/vergen-stdout.log"
 $process = Start-Process powershell -Wait -PassThru -NoNewWindow -ArgumentList "-File $version_script $version_file" -RedirectStandardOutput $stdOutLog -RedirectStandardError $stdErrLog
 
+if ($process.ExitCode -ne 0) {
+	Write-Host "ERROR: running version generator failed."
+  	Get-Content $stdOutLog
+	Get-Content $stdErrLog  
+	Exit 1
+}
+
 if(![System.IO.File]::Exists("$version_file")) {
   Write-Host ("ERROR: Version file '{0}' not found." -f $version_file)
   Exit 1
@@ -67,7 +77,7 @@ Write-Host "Running WiX candle.."
 $stdErrLog = "$pwd/candle-stderr.log"
 $stdOutLog = "$pwd/candle-stdout.log"
 $process = Start-Process candle -Wait -PassThru -NoNewWindow -ArgumentList '-v -ext WiXNetFxExtension -ext WixUtilExtension installer.wxs' -RedirectStandardOutput $stdOutLog -RedirectStandardError $stdErrLog
-if($process.ExitCode -ne 0) {
+if ($process.ExitCode -ne 0) {
   Write-Host "ERROR: running WiX candle failed."
   
   Get-Content $stdOutLog
