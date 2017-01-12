@@ -2,9 +2,8 @@ language: csharp
 solution: WinLLDPService.sln
 
 install:
-  - echo $PWD
-  - echo $HOME
-  - echo $TRAVIS_BUILD_DIR
-  - echo -e "#!/bin/bash\nexit 0" > $PWD/powershell
+  - apt install xmlstarlet
+  - echo "Removing Pre-build events.."
+  - find $TRAVIS_BUILD_DIR -type f -iname "*.csproj" -exec sh -c 'xmlstarlet ed --inplace -d "(/*[name()=Project]/*[name()=PropertyGroup]/*[name()=PreBuildEvent])[1]/.." "{}"' \;
   - nuget restore WinLLDPService.sln
   
