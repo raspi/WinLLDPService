@@ -1,6 +1,6 @@
 language: csharp
 solution: WinLLDPService.sln
 install:
-  - echo -e "#!/bin/bash\nexit 0" > powershell
+  - alias powershell="exit 0"
   - nuget restore WinLLDPService.sln
   
