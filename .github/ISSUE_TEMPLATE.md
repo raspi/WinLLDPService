@@ -18,11 +18,20 @@ For example: Windows 7 Ultimate 64 bit
 
 > …
 
+### `.msi` installer specific:
+
+If installer failed to install the software please provide installer log as attachment by running:
+
+    msiexec /i "installer.msi" /L*V "install.log"
+
+More information can be found by running `msiexec /?`.
+
 ### Is machine connected to Active Directory?
 
  - [ ] Yes
 
-Also specify if you're using Samba as AD.
+- Specify what Windows version is running AD
+- Specify if you're using [Samba](https://www.samba.org/) as AD
  
 ### In case of bug report: Expected behaviour you didn't see
 
@@ -33,5 +42,10 @@ Also specify if you're using Samba as AD.
 > …
 
 ### In case of bug report: Steps to reproduce the problem
+
+> …
+
+### In case of bug report: Additional details
+Any errors on Windows Event Log? What .NET framework version? MSI installer version (for example "Windows® Installer. V5.0.7601.23593" from `msiexec /?`? Did you try to update msiexec and/or .NET framework? Did you try also 32 bit installer on 64 bit system?
 
 > …
