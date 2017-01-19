@@ -18,14 +18,6 @@ For example: Windows 7 Ultimate 64 bit
 
 > …
 
-### `.msi` installer specific:
-
-If installer failed to install the software please provide installer log as attachment by running:
-
-    msiexec /i "installer.msi" /L*V "install.log"
-
-More information can be found by running `msiexec /?`.
-
 ### Is machine connected to Active Directory?
 
  - [ ] Yes
@@ -47,5 +39,9 @@ More information can be found by running `msiexec /?`.
 
 ### In case of bug report: Additional details
 Any errors on Windows Event Log? What .NET framework version? MSI installer version (for example "Windows® Installer. V5.0.7601.23593" from `msiexec /?`? Did you try to update msiexec and/or .NET framework? Did you try also 32 bit installer on 64 bit system?
+
+If installer failed to install the software please provide installer `.log` as attachment by running (as admin):
+
+    msiexec /i "installer.msi" /L*V "install.log"
 
 > …
