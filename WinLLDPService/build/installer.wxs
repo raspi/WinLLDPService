@@ -9,9 +9,8 @@
   <?include $(sys.CURRENTDIR)version.wxi ?>
   
   <Product Name='$(var.ProductShortName)' Manufacturer='$(var.Manufacturer)' Version='$(var.VersionNumber)' Language='1033' Codepage='1252' Id='408ea9f0-8118-4f0e-b618-62dd6b7dedb5' UpgradeCode='$(var.UpgradeCode)'>
-
   
-    <Package Id='*' Keywords='Installer' Description="$(var.ProductShortName) $(var.VersionNumber) Installer" InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' InstallPrivileges='elevated' InstallScope='perMachine' Manufacturer='$(var.Manufacturer)' Comments='$(var.ProductShortName) $(var.VersionNumber)' />
+    <Package Id='*' Keywords='Installer' Description="$(var.ProductShortName) $(var.VersionNumber) Installer" InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' InstallPrivileges='elevated' InstallScope='perMachine' Manufacturer='$(var.Manufacturer)' Comments='$(var.ProductShortName) $(var.VersionNumber)' AdminImage='yes' />
 
     <Icon Id="icon.ico" SourceFile="..\icon.ico" />
 	
@@ -27,7 +26,7 @@
     <Property Id='DiskPrompt' Value="$(var.ProductShortName) Installation [1]" />
 
     <Condition Message="You must have Administrative rights on this machine to install [ProductName].">
-      <![CDATA[ Privileged  ]]>
+      <![CDATA[ Privileged ]]>
     </Condition>
 
     <!-- Ensure .Net 4.0 is installed -->
@@ -61,7 +60,7 @@
 
           <!-- Main EXE file -->
           <Component Id='MainExecutable' Guid='9a017631-7016-4f0f-a2bb-866be992ea9a'>
-            <File Id='ServiceEXE' Name='WinLLDPService.exe' DiskId='1' Source='release\WinLLDPService.exe'  KeyPath='yes'/>
+            <File Id='ServiceEXE' Name='WinLLDPService.exe' DiskId='1' Source='release\WinLLDPService.exe' KeyPath='yes'/>
             <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="$(var.ProductShortName)" DisplayName="$(var.ProductShortName)" Description="$(var.ProductShortName) by $(var.Manufacturer) Version: $(var.VersionNumber) Homepage: $(var.HomepageURL)" Start="auto" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Interactive="no" Vital="yes">
               <util:ServiceConfig FirstFailureActionType='restart' SecondFailureActionType='restart' ThirdFailureActionType='restart' RestartServiceDelayInSeconds='300' ResetPeriodInDays='30' />
             </ServiceInstall>
@@ -74,15 +73,15 @@
           </Component>
 
           <Component Id='DLLSharpPcap' Guid='c70b8961-3a39-47e1-b400-c5cffa739d8d'>
-            <File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='release\SharpPcap.dll'  KeyPath='yes' Vital="yes" />
+            <File Id='SharpPcap' Name='SharpPcap.dll' DiskId='1' Source='release\SharpPcap.dll' KeyPath='yes' Vital="yes" />
           </Component>
 
           <Component Id='DLLLLDPBase' Guid='a9370c06-e330-4f9a-9ab5-dc5b8d5c60da'>
-            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='release\LLDPBase.dll'  KeyPath='yes' Vital="yes" />
+            <File Id='LLDPBase' Name='LLDPBase.dll' DiskId='1' Source='release\LLDPBase.dll' KeyPath='yes' Vital="yes" />
           </Component>
 
         </Directory>
-      </Directory>
+      </Directory> <!-- /Program Files -->
 
       <Directory Id="ProgramMenuFolder" Name="Programs">
         <Directory Id="ProgramMenuDir" Name="$(var.ProductShortName)">
@@ -110,7 +109,7 @@
 
     <WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
 
-    <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
+    <MajorUpgrade DowngradeErrorMessage="Older version of [ProductName] is already installed. Setup will now exit." />
 	
   </Product>
 
