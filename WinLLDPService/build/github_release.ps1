@@ -98,7 +98,10 @@ if (!$old_version_found) {
 $f = [System.IO.FileInfo] $msifile
 $artifact = [string]::Format("{0}", $f.Name)
 
-$uploadUri = $result | Select -ExpandProperty upload_url
+Write-Host $result
+
+$uploadUri = $result | Where-Object {$_.tag_name -eq "v$version"} | Select -ExpandProperty upload_url
+
 $uploadUri = [System.Uri]$uploadUri
 $uploadUri = [string]::Format("{0}://{1}/repos/raspi/WinLLDPService/releases/{2}/assets?name={3}", $uploadUri.Scheme, $uploadUri.Host, $id, $artifact)
 
