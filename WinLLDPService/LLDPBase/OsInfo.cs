@@ -115,7 +115,7 @@ namespace WinLLDPService
 
             }
 
-            return users;
+            return users.OrderBy(x => x.Domain).ThenBy(x => x.Username).ToList();
 
         }
 

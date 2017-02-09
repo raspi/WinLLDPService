@@ -65,8 +65,6 @@ namespace WinLLDPService
                 Debug.WriteLine("No users found.", EventLogEntryType.Error);
             }
 
-            users.Sort();
-
             // Get information which doesn't change often or doesn't need to be 100% accurate in realtime when iterating through adapters
             PacketInfo pinfo = new PacketInfo()
             {
