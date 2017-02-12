@@ -18,7 +18,7 @@
     <Property Id="MSIFASTINSTALL" Value="1" />
     <Media Id="1" Cabinet="Data.cab" EmbedCab="yes" DiskPrompt="CD-ROM #1" CompressionLevel="high" />
     <Property Id="DiskPrompt" Value="$(var.ProductShortName) Installation [1]" />
-    <Condition Message="You must have Administrative rights on this machine to install [ProductName]."><![CDATA[ Privileged ]]></Condition>
+    <Condition Message="You must have Administrative rights on this machine to install [ProductName]."><![CDATA[Privileged]]></Condition>
     <!-- Ensure .Net 4.0 is installed -->
     <PropertyRef Id="NETFRAMEWORK40FULL" />
     <Condition Message="This setup requires the .NET Framework 4.0 to be installed."><![CDATA[ Installed OR NETFRAMEWORK40FULL ]]></Condition>
@@ -81,18 +81,13 @@
     <MajorUpgrade DowngradeErrorMessage="Older version of [ProductName] is already installed. Setup will now exit." />
     <Property Id="InstallURL">$(var.HomepageURL)install?ver=$(var.VersionNumber)</Property>
     <Property Id="UninstallURL">$(var.HomepageURL)uninstall?ver=$(var.VersionNumber)</Property>
-    <CustomAction Id="SetOpenInstallURL" Property="WixShellExecTarget" Value="[InstallURL]" />
-    <CustomAction Id="SetOpenUninstallURL" Property="WixShellExecTarget" Value="[UninstallURL]" />
-    <CustomAction Id="OpenInstallURL" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" Return="ignore" />
-    <CustomAction Id="OpenUninstallURL" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" Return="ignore" />
+    <!-- Set value of WixShellExecTarget property to value of InstallURL if this is first time install -->
+    <SetProperty Id="WixShellExecTarget" Action="SetInstallURL" Value="[InstallURL]" Before="OpenURL" Sequence="execute"><![CDATA[NOT Installed]]></SetProperty>
+    <!-- Set value of WixShellExecTarget property to value of UninstallURL if this is uninstall -->
+    <SetProperty Id="WixShellExecTarget" Action="SetUninstallURL" Value="[UninstallURL]" Before="OpenURL" Sequence="execute"><![CDATA[REMOVE]]></SetProperty>
+    <CustomAction Id="OpenURL" BinaryKey="WixCA" DllEntry="WixShellExec" Return="ignore" />
     <InstallExecuteSequence>
-      <!-- Launch webpage during install -->
-      <Custom Action="SetOpenInstallURL" After="InstallFinalize"><![CDATA[NOT (REMOVE ~="ALL")]]></Custom>
-      <Custom Action="OpenInstallURL" After="SetOpenInstallURL"><![CDATA[NOT (REMOVE ~="ALL")]]></Custom>
-      <!-- Launch webpage during full uninstall, but not upgrade -->
-      <Custom Action="SetOpenUninstallURL" After="InstallFinalize"><![CDATA[REMOVE ~= "ALL" AND NOT UPGRADINGPRODUCTCODE]]></Custom>
-      <Custom Action="OpenUninstallURL" After="SetOpenUninstallURL">
-      </Custom>
+      <Custom Action="OpenURL" After="InstallFinalize" />
     </InstallExecuteSequence>
     <UI />
   </Product>
