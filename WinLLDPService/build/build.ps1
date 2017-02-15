@@ -76,7 +76,7 @@ if([System.IO.File]::Exists("$output_installer_file")) {
 Write-Host "Running WiX candle.."
 $stdErrLog = "$pwd/candle-stderr.log"
 $stdOutLog = "$pwd/candle-stdout.log"
-$process = Start-Process candle -Wait -PassThru -NoNewWindow -ArgumentList '-v -ext WiXNetFxExtension -ext WixUtilExtension installer.wxs' -RedirectStandardOutput $stdOutLog -RedirectStandardError $stdErrLog
+$process = Start-Process candle -Wait -PassThru -NoNewWindow -ArgumentList "-v -ext WiXNetFxExtension -ext WixUtilExtension installer.wxs -arch $arch" -RedirectStandardOutput $stdOutLog -RedirectStandardError $stdErrLog
 if ($process.ExitCode -ne 0) {
   Write-Host "ERROR: running WiX candle failed."
   
@@ -101,6 +101,7 @@ if($process.ExitCode -ne 0) {
   Get-Content $stdOutLog
   Get-Content $stdErrLog  
   
+  Write-Host "Press any key to continue..."  
   $null = [System.Console]::ReadKey()
   
   Exit 1

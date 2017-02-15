@@ -2,6 +2,15 @@
 <?define ProductShortName = "WinLLDPService" ?>
 <?define Manufacturer = "Pekka Järvinen" ?>
 <?define HomepageURL = "https://raspi.github.io/projects/winlldpservice/" ?>
+
+<?if $(sys.BUILDARCH) = x64 ?>
+  <?define Win64 = "yes" ?>
+  <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+  <?define Win64 = "no" ?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <?include $(sys.CURRENTDIR)version.wxi ?>
   <Product Name="$(var.ProductShortName)" Manufacturer="$(var.Manufacturer)" Version="$(var.VersionNumber)" Language="1033" Codepage="1252" Id="408ea9f0-8118-4f0e-b618-62dd6b7dedb5" UpgradeCode="$(var.UpgradeCode)">
@@ -35,7 +44,7 @@
     <Condition Message="This setup requires WinPcap to be installed."><![CDATA[ NOT WINPCAPISINSTALLED OR ( 4 > WINPCAPMAJORVER AND 1 > WINPCAPMINORVER) ]]></Condition>
     <!-- Install dir -->
     <Directory Id="TARGETDIR" Name="SourceDir" DiskId="1">
-      <Directory Id="ProgramFilesFolder" Name="PFiles">
+      <Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles">
         <Directory Id="INSTALLDIR" Name="$(var.ProductShortName)">
           <!-- Main EXE file -->
           <Component Id="MainExecutable" Guid="9a017631-7016-4f0f-a2bb-866be992ea9a">
