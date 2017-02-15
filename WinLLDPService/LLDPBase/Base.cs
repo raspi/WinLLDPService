@@ -367,11 +367,11 @@ namespace WinLLDPService
         }
 
         /// <summary>
-        /// 
+        /// Send packet using SharpPcap
         /// </summary>
-        /// <param name="adapter"></param>
-        /// <param name="payload"></param>
-        /// <returns></returns>
+        /// <param name="adapter">Network adapter</param>
+        /// <param name="payload">Packet to be sent</param>
+        /// <returns>bool</returns>
         private bool SendRawPacket(NetworkInterface adapter, Packet payload)
         {
             Debug.WriteLine("Sending RAW packet", EventLogEntryType.Information);
