@@ -397,12 +397,6 @@ namespace WinLLDPService
                 }
             }
 
-            // == Organization specific TLVs
-
-            // Ethernet
-            lldpPacket.TlvCollection.Add(new OrganizationSpecific(new byte[] { 0x0, 0x12, 0x0f }, 5, new byte[] { 0x5 }));
-
-
             // End of LLDP packet
             lldpPacket.TlvCollection.Add(new EndOfLLDPDU());
 
