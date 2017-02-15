@@ -64,10 +64,17 @@ namespace WinLLDPService
                 run.Run();
                 ReduceMemory();
             }
+            catch (System.DllNotFoundException ex)
+            {
+                // Log run error(s) to Windows Event Log
+                EventLog.WriteEntry("Missing DLL: " + ex.ToString(), EventLogEntryType.Error);
+
+                throw ex;
+            }
             catch (Exception ex)
             {
                 // Log run error(s) to Windows Event Log
-                EventLog.WriteEntry("Packet sent failed: " + ex.ToString(), EventLogEntryType.Error);
+                EventLog.WriteEntry("Packet sent failed: " + ex.ToString(), EventLogEntryType.Warning);
             }
         }
 
@@ -84,7 +91,7 @@ namespace WinLLDPService
             } catch (Exception ex)
             {
                 // Log error(s) to Windows Event Log
-                EventLog.WriteEntry("Packet sent failed: " + ex.ToString(), EventLogEntryType.Error);
+                EventLog.WriteEntry("Freeing memory error: " + ex.ToString(), EventLogEntryType.Warning);
             }
         }
         /// <summary>
