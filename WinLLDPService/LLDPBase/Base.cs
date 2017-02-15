@@ -285,7 +285,7 @@ namespace WinLLDPService
             // Gateway
             if (ipProperties.GatewayAddresses.Count > 0)
             {
-                portDescription.Add("GW", String.Join(", ", ipProperties.GatewayAddresses.Select(i => i.Address.ToString()).ToArray()));
+                portDescription.Add("GW", String.Join(", ", ipProperties.GatewayAddresses.Select(i => i.Address.ToString()).ToArray()).Trim().Trim(','));
             }
             else
             {
@@ -303,7 +303,7 @@ namespace WinLLDPService
                     .ToArray()
                     ;
 
-                portDescription.Add("NM", String.Join(", ", mask));
+                portDescription.Add("NM", String.Join(", ", mask).Trim().Trim(','));
             }
             else
             {
@@ -314,7 +314,7 @@ namespace WinLLDPService
             // DNS server(s)
             if (ipProperties.DnsAddresses.Count > 0)
             {
-                portDescription.Add("DNS", String.Join(", ", ipProperties.DnsAddresses.Select(i => i.ToString()).ToArray()));
+                portDescription.Add("DNS", String.Join(", ", ipProperties.DnsAddresses.Select(i => i.ToString()).ToArray()).Trim().Trim(','));
             }
             else
             {
@@ -324,7 +324,7 @@ namespace WinLLDPService
             // DHCP server
             if (ipProperties.DhcpServerAddresses.Count > 0)
             {
-                portDescription.Add("DHCP", String.Join(", ", ipProperties.DhcpServerAddresses.Select(i => i.ToString()).ToArray()));
+                portDescription.Add("DHCP", String.Join(", ", ipProperties.DhcpServerAddresses.Select(i => i.ToString()).ToArray()).Trim().Trim(','));
             }
             else
             {
@@ -334,7 +334,7 @@ namespace WinLLDPService
             // WINS server(s)
             if (ipProperties.WinsServersAddresses.Count > 0)
             {
-                portDescription.Add("WINS", String.Join(", ", ipProperties.WinsServersAddresses.Select(i => i.ToString()).ToArray()));
+                portDescription.Add("WINS", String.Join(", ", ipProperties.WinsServersAddresses.Select(i => i.ToString()).ToArray()).Trim().Trim(','));
             }
 
 
