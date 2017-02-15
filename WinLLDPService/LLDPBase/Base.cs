@@ -228,58 +228,6 @@ namespace WinLLDPService
             // Port description
             Dictionary<string, string> portDescription = new Dictionary<string, string>
             {
-
-                /*
-                 adapter.Id is GUID and can be found in several places: 
-                 In this example it is "{87423023-7191-4C03-A049-B8E7DBB36DA4}"
-
-                 Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
-                 - \NetworkCards\<number>\ServiceName value (in same tree as adapter.Description!)
-                 - \NetworkList\Nla\Cache\Intranet\<adapter.Id> key
-                 - \NetworkList\Nla\Cache\Intranet\<domain>\<adapter.Id> key
-
-                 Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion
-                 - \NetworkCards\<number>\ServiceName value
-
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002BE10318}\0007
-                   {4D36E972-E325-11CE-BFC1-08002BE10318} == Network and Sharing Center -> viewing adapter's "Properties" and selecting "Device class GUID" from dropdown menu
-                   {4D36E972-E325-11CE-BFC1-08002BE10318}\0007 == Network and Sharing Center -> viewing adapter's "Properties" and selecting "Driver key" from dropdown menu
-                 - \NetCfgInstanceId value
-                 - \Linkage\Export value (part of)
-                 - \Linkage\FilterList value (part of)
-                 - \Linkage\RootDevice value 
-
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses\{ad498944-762f-11d0-8dcb-00c04fc3358c}\##?#PCI#VEN_8086&DEV_1503&SUBSYS_849C1043&REV_06#3&11583659&0&C8#{ad498944-762f-11d0-8dcb-00c04fc3358c}\#{87423023-7191-4C03-A049-B8E7DBB36DA4}\SymbolicLink value (part of)
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Network\{ 4D36E972 - E325 - 11CE - BFC1 - 08002BE10318}\{ 87423023 - 7191 - 4C03 - A049 - B8E7DBB36DA4}
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Network\{4D36E972-E325-11CE-BFC1-08002BE10318}\{ACB3F7A0-2E45-4435-854A-A4E120477E1D}\Connection\Name value (part of)
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\{ 87423023 - 7191 - 4C03 - A049 - B8E7DBB36DA4}
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\iphlpsvc\Parameters\Isatap\{ ACB3F7A0 - 2E45 - 4435 - 854A - A4E120477E1D}\InterfaceName value (part of)
-
-                 Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\<various names>\Linkage
-                 - \Bind value (part of)
-                 - \Export value (part of)
-                 - \Route value (part of)
-
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\Tcpip_{87423023-7191-4C03-A049-B8E7DBB36DA4}
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Psched\Parameters\NdisAdapters\{87423023-7191-4C03-A049-B8E7DBB36DA4}
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\RemoteAccess\Interfaces\<number>\InterfaceName value
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Adapters\{87423023-7191-4C03-A049-B8E7DBB36DA4}\IpConfig value (part of)
-
-                IPv4 information:
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\Tcpip\Parameters\Interfaces\{87423023-7191-4C03-A049-B8E7DBB36DA4}
-
-                IPv6 information:
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\TCPIP6\Parameters\Interfaces\{87423023-7191-4c03-a049-b8e7dbb36da4}
-
-                Registry: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\WfpLwf\Parameters\NdisAdapters\{87423023-7191-4C03-A049-B8E7DBB36DA4}
-
-                */
-
-                //{ "ID", adapter.Id }
-
-
-                // Name, for example "VMware Network Adapter VMnet1"
-                { "Name", adapter.Name }
             };
 
             // Gateway
