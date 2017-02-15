@@ -17,4 +17,7 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("17.02.09.2046")]
+#region Version
+[assembly: AssemblyVersion("17.02.15.2053")]
+[assembly: AssemblyFileVersion("17.02.15.2053")]
+#endregion
