@@ -351,7 +351,7 @@ namespace WinLLDPService
                 CapabilityOptions.StationOnly
             };
 
-            ushort expectedSystemCapabilitiesCapability = GetCapabilityOptionsBits(GetCapabilityOptions());
+            ushort expectedSystemCapabilitiesCapability = GetCapabilityOptionsBits(GetCapabilityOptions(adapter));
             ushort expectedSystemCapabilitiesEnabled = GetCapabilityOptionsBits(capabilitiesEnabled);
 
             // Constuct LLDP packet 
@@ -518,15 +518,19 @@ namespace WinLLDPService
         /// - Station 
         /// </summary>
         /// <returns>List<CapabilityOptions></returns>
-        private List<CapabilityOptions> GetCapabilityOptions()
+        private List<CapabilityOptions> GetCapabilityOptions(NetworkInterface adapter)
         {
             List<CapabilityOptions> capabilities = new List<CapabilityOptions>
             {
                 CapabilityOptions.Bridge,
                 CapabilityOptions.Router,
-                CapabilityOptions.WLanAP,
                 CapabilityOptions.StationOnly
             };
+
+            if (adapter.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+            {
+                capabilities.Add(CapabilityOptions.WLanAP);
+            }
 
             return capabilities;
         }
