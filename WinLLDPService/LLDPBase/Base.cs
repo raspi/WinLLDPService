@@ -313,9 +313,7 @@ namespace WinLLDPService
             lldpPacket.TlvCollection.Add(new SystemDescription(CreateTlvString(systemDescription)));
             lldpPacket.TlvCollection.Add(new SystemCapabilities(expectedSystemCapabilitiesCapability, expectedSystemCapabilitiesEnabled));
 
-            // Management
-            var managementAddressObjectIdentifier = "Management";
-
+            // Add management address(es)
             if (null != ipv4Properties)
             {
                 if (ipv4Properties.IsForwardingEnabled)
@@ -328,7 +326,7 @@ namespace WinLLDPService
                 {
                     if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
-                        lldpPacket.TlvCollection.Add(new ManagementAddress(new NetworkAddress(ip.Address), InterfaceNumbering.SystemPortNumber, Convert.ToUInt32(ipv4Properties.Index), managementAddressObjectIdentifier));
+                        lldpPacket.TlvCollection.Add(new ManagementAddress(new NetworkAddress(ip.Address), InterfaceNumbering.SystemPortNumber, Convert.ToUInt32(ipv4Properties.Index), ""));
                     }
                 }
             }
@@ -340,7 +338,7 @@ namespace WinLLDPService
                 {
                     if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                     {
-                        lldpPacket.TlvCollection.Add(new ManagementAddress(new NetworkAddress(ip.Address), InterfaceNumbering.SystemPortNumber, Convert.ToUInt32(ipv6Properties.Index), managementAddressObjectIdentifier));
+                        lldpPacket.TlvCollection.Add(new ManagementAddress(new NetworkAddress(ip.Address), InterfaceNumbering.SystemPortNumber, Convert.ToUInt32(ipv6Properties.Index), ""));
                     }
                 }
             }
