@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 #endregion
 
+[assembly: AssemblyCopyright("Pekka Järvinen 2015-")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyCompany("-")]
