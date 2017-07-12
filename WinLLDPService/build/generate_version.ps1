@@ -4,12 +4,16 @@ param (
     [Parameter(Mandatory=$true)][string]$version_file_name
 )
 
+Push-Location "$PSScriptRoot"
+
 cd "release"
 
 if(![System.IO.File]::Exists("WinLLDPService.exe")) {
-	Write-Host "File not found!"
+	Write-Output "File not found!"
+	Exit 1
 }
 
+# Get version from .exe
 $ver = ((Get-Item "WinLLDPService.exe").VersionInfo).ProductVersion.ToString() -Split "\."
 
 if([System.IO.File]::Exists("$version_file_name")) {
@@ -31,16 +35,16 @@ $version_file.WriteLine("</Include>")
 $version_file.Close()
 
 if(![System.IO.File]::Exists("$version_file_name")) {
-  Write-Host ("ERROR: Version file '{0}' not found." -f $version_file_name)
+  Write-Output ("ERROR: Version file '{0}' not found." -f $version_file_name)
   Exit 1
 }
 else
 {
-  Write-Host ("Version file '{0}' created." -f $version_file_name)
-  Write-Host ("-" * 40)  
+  Write-Output ("Version file '{0}' created." -f $version_file_name)
+  Write-Output ("-" * 40)  
   Get-Content $version_file_name
-  Write-Host ("-" * 40)  
-  Write-Host ""
+  Write-Output ("-" * 40)  
+  Write-Output ""
 }
 
 Exit 0
