@@ -12,6 +12,26 @@ branches:
   only:
     - master
 
+matrix:
+  allow_failures:
+    - platform: x86
+      configuration: Debug
+    - platform: x64
+      configuration: Debug
+  exclude:
+    - platform: x86
+      configuration: Debug
+    - platform: x64
+      configuration: Debug
+
+assembly_info:
+  patch: false
+  
+cache:
+  - packages -> **\packages.config
+
+skip_tags: true
+
 test: off
 
 before_build:
@@ -21,16 +41,13 @@ build:
   parallel: true
   verbosity: detailed
 
+environment:
+  ghapikey:
+    secure: "qxDTsrjBZ3bZCaTvxQMVE52PK03x3CeopvZYLRvceugKwnmpk49o8Shir9Gy1z+W"
+
 after_build:
   - ps: Copy-Item "WinLLDPService\build\paths.ps1.example" "WinLLDPService\build\paths.ps1"
   - ps: WinLLDPService\build\build.ps1 "$Env:PLATFORM"
 
-matrix:
-  allow_failures:
-    - platform: x86
-      configuration: Debug
-    - platform: x64
-      configuration: Debug
-
-cache:
-  - packages -> **\packages.config
+deploy_script:
+  - ps: WinLLDPService\build\github_release.ps1 "WinLLDPService-$Env:PLATFORM.msi"
