@@ -53,9 +53,7 @@ environment:
 after_build:
   - ps: Copy-Item "WinLLDPService\build\paths.ps1.example" "WinLLDPService\build\paths.ps1"
   - ps: WinLLDPService\build\build.ps1 "$Env:PLATFORM"
+  - ps: WinLLDPService\build\github_release.ps1 "WinLLDPService-$Env:PLATFORM.msi"
 
 #artifacts:
 #  - path: '**\WinLLDPService-*.msi'
-
-on_success:
-  - ps: WinLLDPService\build\github_release.ps1 "WinLLDPService-$Env:PLATFORM.msi"
