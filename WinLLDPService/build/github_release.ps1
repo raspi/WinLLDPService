@@ -15,21 +15,18 @@ if (-not (Test-Path Env:ghapikey)) {
 	Exit 1
 }
 
-$apikey = $Env:ghapikey
-
 $msifile = Resolve-Path "$msifile"
 
 # Set environmental variables for WiX
+# Set environmental variables for WiX location
 $paths_file = "$pwd/paths.ps1"
-Write-Output ("Calling '{0}' to set environmental variables.." -f $paths_file)
 
-if(![System.IO.File]::Exists("$paths_file")) {
+if([System.IO.File]::Exists("$paths_file")) {
+  Write-Output ("Calling '{0}' to set environmental variables.." -f $paths_file)
+  & $paths_file
+} else {
   Write-Output ("ERROR: Paths file '{0}' not found. Rename or copy .example file to .ps1 file." -f $paths_file)
-  $null = [System.Console]::ReadKey()
-  Exit 1
 }
-
-& $paths_file
 
 # Register WiX MSI file information DLL
 Add-Type -Path "$Env:WIXPATH\Microsoft.Deployment.WindowsInstaller.dll"
@@ -48,7 +45,7 @@ $releaseParams = @{
    Method = 'GET';
    Headers = @{
      Authorization = 'Basic ' + [Convert]::ToBase64String(
-     [Text.Encoding]::ASCII.GetBytes($apikey + ":x-oauth-basic"));
+     [Text.Encoding]::ASCII.GetBytes($Env:ghapikey + ":x-oauth-basic"));
    }
    ContentType = 'application/json';
 }
@@ -83,7 +80,7 @@ if (!$old_version_found) {
 	   Method = 'POST';
 	   Headers = @{
 		 Authorization = 'Basic ' + [Convert]::ToBase64String(
-		 [Text.Encoding]::ASCII.GetBytes($apikey + ":x-oauth-basic"));
+		 [Text.Encoding]::ASCII.GetBytes($Env:ghapikey + ":x-oauth-basic"));
 	   }
 	   ContentType = 'application/json';
 	   Body = (ConvertTo-Json $releaseData -Compress)
@@ -114,7 +111,7 @@ $uploadParams = @{
    Method = 'POST';
    Headers = @{
      Authorization = 'Basic ' + [Convert]::ToBase64String(
-     [Text.Encoding]::ASCII.GetBytes($apikey + ":x-oauth-basic"));
+     [Text.Encoding]::ASCII.GetBytes($Env:ghapikey + ":x-oauth-basic"));
    }
    ContentType = 'application/octet-stream';
    InFile = $msifile
@@ -127,3 +124,5 @@ $result
 Write-Output ""
 Write-Output "Now go to GitHub and release this version."
 Write-Output ""
+
+Exit 0
