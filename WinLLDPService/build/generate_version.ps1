@@ -1,22 +1,25 @@
 # Generate version .wxi include file for .wxs
 
 param (
-    [Parameter(Mandatory=$true)][string]$version_file_name
+    [Parameter(Mandatory=$true)][string]$exe_file_name
 )
 
 Push-Location "$PSScriptRoot"
 
-cd "release"
+$version_file_name="$pwd/version.wxi"
 
-if(![System.IO.File]::Exists("WinLLDPService.exe")) {
-	Write-Output "File not found!"
+if(![System.IO.File]::Exists("$exe_file_name")) {
+	Write-Output ("File not found: '{0}'!" -f "$exe_file_name")
 	Exit 1
 }
 
 # Get version from .exe
-$ver = ((Get-Item "WinLLDPService.exe").VersionInfo).ProductVersion.ToString() -Split "\."
+Write-Output ("Getting version from file '{0}'" -f "$exe_file_name")
+$ver = ((Get-Item "$exe_file_name").VersionInfo).ProductVersion.ToString() -Split "\."
+Write-Output ("Version: '{0}'" -f "$ver")
 
 if([System.IO.File]::Exists("$version_file_name")) {
+  # Remove old file
   Remove-Item "$version_file_name"
 }
 

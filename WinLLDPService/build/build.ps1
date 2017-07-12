@@ -19,6 +19,7 @@ if(![System.IO.Directory]::Exists("$release_dir")) {
 Write-Output "Removing old files from '$release_dir'"
 Write-Output ""
 
+# Remove old files
 Get-ChildItem -Path "$release_dir" -Include *.* -File -Recurse | foreach { $_.Delete()}
 
 $source_dir = "$pwd/../bin/$arch/Release/*"
@@ -39,21 +40,15 @@ Write-Output "Generating version file.."
 $version_script = "$pwd/generate_version.ps1"
 
 # Version include file
-$version_file = "$pwd/version.wxi"
 $stdErrLog = "$pwd/vergen-stderr.log"
 $stdOutLog = "$pwd/vergen-stdout.log"
-$process = Start-Process powershell -Wait -PassThru -NoNewWindow -ArgumentList "-File $version_script $version_file" -RedirectStandardOutput $stdOutLog -RedirectStandardError $stdErrLog
+$process = Start-Process powershell -Wait -PassThru -NoNewWindow -ArgumentList "-File $version_script $release_dir/WinLLDPService.exe" -RedirectStandardOutput $stdOutLog -RedirectStandardError $stdErrLog
 
 if ($process.ExitCode -ne 0) {
 	Write-Output "ERROR: running version generator failed."
   	Get-Content $stdOutLog
 	Get-Content $stdErrLog
 	Exit 1
-}
-
-if(![System.IO.File]::Exists("$version_file")) {
-  Write-Output ("ERROR: Version file '{0}' not found." -f $version_file)
-  Exit 1
 }
 
 # Set environmental variables for WiX location
