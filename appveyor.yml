@@ -20,7 +20,10 @@ before_build:
 build:
   parallel: true
   verbosity: detailed
-  
+
+after_build:
+  - WinLLDPService\build\build.ps1 $Env:PLATFORM
+
 matrix:
   allow_failures:
     - platform: x86
