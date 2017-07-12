@@ -37,7 +37,7 @@ if([System.IO.File]::Exists("$stdErrLog")) {
 Write-Host "Finding AssemblyInfo files.."
 Write-Host ""
 
-Get-ChildItem -Path "$pwd" -Filter "AssemblyInfo.cs" -Recurse -Name | ForEach-Object {
+Get-ChildItem -Path "$pwd" -Filter "SharedAssemblyInfo.cs" -Recurse -Name | ForEach-Object {
 	Write-Host "Reading file '$_'."
 	$lines = (Get-Content "$_" -Encoding UTF8)
 	$len = $lines.Count

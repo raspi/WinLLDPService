@@ -107,6 +107,7 @@
     <Compile Include="NativeMethods.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Properties\SharedAssemblyInfo.cs" />
     <Compile Include="ServiceMain.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

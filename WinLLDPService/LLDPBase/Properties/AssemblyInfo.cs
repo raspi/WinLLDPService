@@ -1,20 +1,12 @@
-﻿using System.Reflection;
+﻿#region Using directives
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
+#endregion
 
 [assembly: AssemblyTitle("LLDPBase")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("-")]
 [assembly: AssemblyProduct("LLDPBase")]
-[assembly: AssemblyCopyright("Pekka Järvinen 2015-")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-[assembly: ComVisible(false)]
+[assembly: AssemblyDescription("")]
 
 [assembly: Guid("57b661ac-c800-4e00-be9d-52ce58e1f0f1")]
-#region Version
-[assembly: AssemblyVersion("17.02.15.2317")]
-[assembly: AssemblyFileVersion("17.02.15.2317")]
-#endregion
