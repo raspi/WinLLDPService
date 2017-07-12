@@ -1,6 +1,6 @@
 # Update AssemblyInfo files
 
-cd "$PSScriptRoot"
+Push-Location "$PSScriptRoot"
 
 if(![System.IO.Directory]::Exists("$pwd/../.git")) {
 	Write-Host "Git directory not found."
