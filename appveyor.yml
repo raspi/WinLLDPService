@@ -22,6 +22,7 @@ build:
   verbosity: detailed
 
 after_build:
+  - ps: Copy-Item "WinLLDPService\build\paths.ps1.example" "WinLLDPService\build\paths.ps1"
   - ps: WinLLDPService\build\build.ps1 "$Env:PLATFORM"
 
 matrix:
