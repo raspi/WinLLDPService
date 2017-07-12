@@ -142,4 +142,6 @@ Write-Output ""
 Write-Output "Now go to GitHub and release this version."
 Write-Output ""
 
+Pop-Location
+
 Exit 0

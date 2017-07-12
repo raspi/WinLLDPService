@@ -50,4 +50,6 @@ else
   Write-Output ""
 }
 
+Pop-Location
+
 Exit 0

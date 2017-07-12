@@ -120,4 +120,6 @@ Write-Output ""
 
 Remove-Item "$pwd/*.log"
 
+Pop-Location
+
 Exit 0

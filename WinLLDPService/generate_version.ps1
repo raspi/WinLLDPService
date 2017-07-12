@@ -64,4 +64,6 @@ Get-ChildItem -Path "$pwd" -Filter "SharedAssemblyInfo.cs" -Recurse -Name | ForE
 
 Write-Host "Done."
 
+Pop-Location
+
 Exit 0
