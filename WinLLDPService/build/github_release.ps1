@@ -6,10 +6,12 @@ param (
     [Parameter(Mandatory=$true)][string]$msifile
 )
 
+Push-Location "$PSScriptRoot"
+
 if (-not (Test-Path Env:ghapikey)) {
-	Write-Host "Environmental variable 'ghapikey' is not set."
-	Write-Host "Run:"
-	Write-Host '$Env:ghapikey = "<your GitHub API KEY>"'
+	Write-Output "Environmental variable 'ghapikey' is not set."
+	Write-Output "Run:"
+	Write-Output '$Env:ghapikey = "<your GitHub API KEY>"'
 	Exit 1
 }
 
@@ -19,10 +21,10 @@ $msifile = Resolve-Path "$msifile"
 
 # Set environmental variables for WiX
 $paths_file = "$pwd/paths.ps1"
-Write-Host ("Calling '{0}' to set environmental variables.." -f $paths_file)
+Write-Output ("Calling '{0}' to set environmental variables.." -f $paths_file)
 
 if(![System.IO.File]::Exists("$paths_file")) {
-  Write-Host ("ERROR: Paths file '{0}' not found. Rename or copy .example file to .ps1 file." -f $paths_file)
+  Write-Output ("ERROR: Paths file '{0}' not found. Rename or copy .example file to .ps1 file." -f $paths_file)
   $null = [System.Console]::ReadKey()
   Exit 1
 }
@@ -33,13 +35,13 @@ if(![System.IO.File]::Exists("$paths_file")) {
 Add-Type -Path "$Env:WIXPATH\Microsoft.Deployment.WindowsInstaller.dll"
 
 # Get version from MSI file
-Write-Host "Getting version from .msi file.."
+Write-Output "Getting version from .msi file.."
 $db = new-object Microsoft.Deployment.WindowsInstaller.Database "$msifile"
 $version = $db.ExecutePropertyQuery("ProductVersion")
 $db.Close()
 
-Write-Host "Version: $version"
-Write-Host ""
+Write-Output "Version: $version"
+Write-Output ""
 
 $releaseParams = @{
    Uri = "https://api.github.com/repos/raspi/WinLLDPService/releases";
@@ -51,7 +53,7 @@ $releaseParams = @{
    ContentType = 'application/json';
 }
 
-Write-Host "Getting old release on github.."
+Write-Output "Getting old release on github.."
 $result = Invoke-RestMethod @releaseParams
 
 $id = 0
@@ -87,7 +89,7 @@ if (!$old_version_found) {
 	   Body = (ConvertTo-Json $releaseData -Compress)
 	}
 
-	Write-Host "Making new release on github.."
+	Write-Output "Making new release on github.."
 	$result = Invoke-RestMethod @releaseParams
 	$result
 
@@ -98,14 +100,14 @@ if (!$old_version_found) {
 $f = [System.IO.FileInfo] $msifile
 $artifact = [string]::Format("{0}", $f.Name)
 
-Write-Host $result
+Write-Output $result
 
 $uploadUri = $result | Where-Object {$_.tag_name -eq "v$version"} | Select -ExpandProperty upload_url
 
 $uploadUri = [System.Uri]$uploadUri
 $uploadUri = [string]::Format("{0}://{1}/repos/raspi/WinLLDPService/releases/{2}/assets?name={3}", $uploadUri.Scheme, $uploadUri.Host, $id, $artifact)
 
-Write-Host "Upload URL: '$uploadUri'"
+Write-Output "Upload URL: '$uploadUri'"
 
 $uploadParams = @{
    Uri = $uploadUri;
@@ -118,10 +120,10 @@ $uploadParams = @{
    InFile = $msifile
 }
 
-Write-Host "Uploading msi file.."
+Write-Output "Uploading msi file.."
 $result = Invoke-RestMethod @uploadParams
 $result
 
-Write-Host ""
-Write-Host "Now go to GitHub and release this version."
-Write-Host ""
+Write-Output ""
+Write-Output "Now go to GitHub and release this version."
+Write-Output ""
