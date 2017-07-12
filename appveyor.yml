@@ -1,3 +1,5 @@
+# https://www.appveyor.com/docs/appveyor-yml/
+
 version: "{build}"
 
 os: Visual Studio 2015
@@ -34,6 +36,9 @@ skip_tags: true
 
 test: off
 
+init:
+  - git config --global core.autocrlf input
+
 before_build:
   - cmd: nuget restore
 
@@ -48,6 +53,9 @@ environment:
 after_build:
   - ps: Copy-Item "WinLLDPService\build\paths.ps1.example" "WinLLDPService\build\paths.ps1"
   - ps: WinLLDPService\build\build.ps1 "$Env:PLATFORM"
+
+artifacts:
+  - path: '**\WinLLDPService-*.msi'
 
 deploy_script:
   - ps: WinLLDPService\build\github_release.ps1 "WinLLDPService-$Env:PLATFORM.msi"
