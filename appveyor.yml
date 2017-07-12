@@ -22,7 +22,7 @@ build:
   verbosity: detailed
 
 after_build:
-  - WinLLDPService\build\build.ps1 $Env:PLATFORM
+  - ps: WinLLDPService\build\build.ps1 "$Env:PLATFORM"
 
 matrix:
   allow_failures:
