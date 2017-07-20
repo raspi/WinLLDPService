@@ -19,6 +19,7 @@
     <Property Id="ARPCOMMENTS">$(var.HomepageURL)</Property>
     <Property Id="ARPCONTACT">$(var.HomepageURL)</Property>
     <Property Id="ARPHELPLINK">$(var.HomepageURL)</Property>
+	<Property Id="ARPREADME">$(var.HomepageURL)</Property>
     <Property Id="ARPURLINFOABOUT">$(var.HomepageURL)</Property>
     <Property Id="ARPURLUPDATEINFO">$(var.HomepageURL)</Property>
     <Property Id="ARPNOREPAIR">1</Property>
