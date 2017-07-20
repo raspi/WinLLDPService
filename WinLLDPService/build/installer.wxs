@@ -15,26 +15,21 @@
   <?include $(sys.CURRENTDIR)version.wxi ?>
   <Product Name="$(var.ProductShortName) $(var.VersionNumber) ($(sys.BUILDARCH))" Manufacturer="$(var.Manufacturer)" Version="$(var.VersionNumber)" Language="1033" Codepage="1252" Id="408ea9f0-8118-4f0e-b618-62dd6b7dedb5" UpgradeCode="$(var.UpgradeCode)">
     <Package Id="*" Keywords="[WelcomeDlg_Title]" Description="[WelcomeDlg_Title]" InstallerVersion="400" Languages="1033" Compressed="yes" SummaryCodepage="1252" InstallPrivileges="elevated" InstallScope="perMachine" Manufacturer="$(var.Manufacturer)" Comments="[WelcomeDlg_Title]" AdminImage="yes" />
-    <Icon Id="icon.ico" SourceFile="..\icon.ico" />
-    <Property Id="ARPCOMMENTS">$(var.HomepageURL)</Property>
-    <Property Id="ARPCONTACT">$(var.HomepageURL)</Property>
-    <Property Id="ARPHELPLINK">$(var.HomepageURL)</Property>
-	<Property Id="ARPREADME">$(var.HomepageURL)</Property>
-    <Property Id="ARPURLINFOABOUT">$(var.HomepageURL)</Property>
-    <Property Id="ARPURLUPDATEINFO">$(var.HomepageURL)</Property>
-    <Property Id="ARPNOREPAIR">1</Property>
-	<Property Id="ARPNOMODIFY">1</Property>
-    <!-- Disable "Repair" option with install -->
-    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
+    <Property Id="ARPPRODUCTICON" Value="ICONFILE" />
+    <Property Id="ARPCOMMENTS" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+    <Property Id="ARPCONTACT" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+    <Property Id="ARPHELPLINK" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+	<Property Id="ARPREADME" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+    <Property Id="ARPURLINFOABOUT" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+    <Property Id="ARPURLUPDATEINFO" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" /> <!-- Disable "Repair" option with install -->
+	<Property Id="ARPNOMODIFY" Value="yes" Secure="yes" /> <!-- Disable "Modify" option with install -->
     <Property Id="MSIFASTINSTALL" Value="1" />
-    <Media Id="1" Cabinet="Data.cab" EmbedCab="yes" DiskPrompt="[WelcomeDlg_Title]" CompressionLevel="high" />
+    <Property Id="InstallURL" Value="$(var.HomepageURL)install?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=installer" />
+    <Property Id="UninstallURL" Value="$(var.HomepageURL)uninstall?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=installer" />
     <Property Id="DiskPrompt" Value="[WelcomeDlg_Title]" />
-	<!-- Admin privileges required -->
-    <Condition Message="$(loc.Error1925)"><![CDATA[Privileged]]></Condition>
-    <!-- Ensure .Net 4.0 is installed -->
-    <PropertyRef Id="NETFRAMEWORK40FULL" />
-    <Condition Message="This setup requires the .NET Framework 4.0 to be installed."><![CDATA[ Installed OR NETFRAMEWORK40FULL ]]></Condition>
-    <!-- Check WinPcap -->
+
     <Property Id="WINPCAPISINSTALLED">
       <RegistrySearch Id="RegistrySearchWinPcapKey" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" />
     </Property>
@@ -44,6 +39,16 @@
     <Property Id="WINPCAPMINORVER">
       <RegistrySearch Id="RegistrySearchWinPcapMinor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMinor" Type="raw" />
     </Property>
+
+    <Icon Id="ICONFILE" SourceFile="..\icon.ico" />
+	
+    <Media Id="1" Cabinet="Data.cab" EmbedCab="yes" DiskPrompt="[WelcomeDlg_Title]" CompressionLevel="high" />
+	<!-- Admin privileges required -->
+    <Condition Message="$(loc.Error1925)"><![CDATA[Privileged]]></Condition>
+    <!-- Ensure .Net 4.0 is installed -->
+    <PropertyRef Id="NETFRAMEWORK40FULL" />
+    <Condition Message="This setup requires the .NET Framework 4.0 to be installed."><![CDATA[ Installed OR NETFRAMEWORK40FULL ]]></Condition>
+    <!-- Check WinPcap -->
     <Condition Message="This setup requires WinPcap to be installed."><![CDATA[ NOT WINPCAPISINSTALLED OR ( 4 > WINPCAPMAJORVER AND 1 > WINPCAPMINORVER) ]]></Condition>
     <!-- Install dir -->
     <Directory Id="TARGETDIR" Name="SourceDir" DiskId="1">
@@ -87,13 +92,10 @@
       <ComponentRef Id="DLLLLDPBase" Primary="yes" />
       <ComponentRef Id="ProgramMenuDir" Primary="yes" />
     </Feature>
-    <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
     <UIRef Id="WixUI_Mondo" />
     <UIRef Id="WixUI_ErrorProgressText" />
     <WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
     <MajorUpgrade DowngradeErrorMessage="loc.NewerVersionInstalled" Schedule="afterInstallInitialize" IgnoreRemoveFailure="no" AllowSameVersionUpgrades="no" AllowDowngrades="no" />
-    <Property Id="InstallURL">$(var.HomepageURL)install?ver=$(var.VersionNumber)</Property>
-    <Property Id="UninstallURL">$(var.HomepageURL)uninstall?ver=$(var.VersionNumber)</Property>
     <!-- Set value of WixShellExecTarget property to value of InstallURL if this is first time install -->
     <SetProperty Id="WixShellExecTarget" Action="SetInstallURL" Value="[InstallURL]" Before="OpenURL" Sequence="execute"><![CDATA[NOT Installed]]></SetProperty>
     <!-- Set value of WixShellExecTarget property to value of UninstallURL if this is uninstall -->
