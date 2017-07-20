@@ -9,8 +9,8 @@ Uses:
 * [SharpPcap](https://github.com/chmorgan/sharppcap) - https://www.nuget.org/packages/SharpPcap/
 * [Packet.NET](https://github.com/chmorgan/packetnet) - https://www.nuget.org/packages/PacketDotNet/
 
-# How to build installer:
-Uses [WiX](http://wixtoolset.org/) to build `.msi` installer package. See `build` directory for more information.
+# How to build installer
+See [build](build/) directory for more information.
 
 # How to debug
 * Visual Studio's own debugging tools
