@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+
+	<!-- Action(s) after (un)successful (un)install -->
+
+	<!-- Sequences -->
+	<InstallExecuteSequence>
+		<Custom Action="OpenURL" After="InstallFinalize" />
+	</InstallExecuteSequence>
+	
+	<!-- Open Install URL -->
+	<SetProperty Id="WixShellExecTarget" Action="SetInstallURL" Value="$(var.HomepageURL)install?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=installer" Before="OpenURL" Sequence="execute">
+		<![CDATA[ NOT Installed ]]>
+	</SetProperty>
+
+	<!-- Open Uninstall URL -->
+	<SetProperty Id="WixShellExecTarget" Action="SetUninstallURL" Value="$(var.HomepageURL)uninstall?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=installer" Before="OpenURL" Sequence="execute">
+		<![CDATA[ REMOVE ]]>
+	</SetProperty>
+
+	<!-- Open Install or Uninstall URL -->
+	<CustomAction Id="OpenURL" BinaryKey="WixCA" DllEntry="WixShellExec" Return="ignore" />	
+	
+</Include>

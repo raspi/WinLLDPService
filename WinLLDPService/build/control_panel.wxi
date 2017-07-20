@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+
+	<!-- Control Panel Settings -->
+
+	<!-- App URLs -->
+	<Property Id="ARPCOMMENTS" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+	<Property Id="ARPCONTACT" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+	<Property Id="ARPHELPLINK" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+	<Property Id="ARPREADME" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+	<Property Id="ARPURLINFOABOUT" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+	<Property Id="ARPURLUPDATEINFO" Value="$(var.HomepageURL)?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=controlpanel" />
+
+	<!-- Disable "Repair" option with install -->
+	<Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />
+	
+	<!-- Disable "Modify" option with install -->
+	<Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />
+
+</Include>
