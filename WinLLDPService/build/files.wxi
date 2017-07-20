@@ -3,12 +3,12 @@
 
 	<!-- Files to install -->
 
-	<!-- Icon -->
+	<!-- Icon file -->
 	<Icon Id="ProductIcon" SourceFile="..\icon.ico" />
 
-	<!-- Icon -->
+	<!-- Control Panel Icon -->
 	<Property Id="ARPPRODUCTICON" Value="ProductIcon" />
-	
+
 	<!-- License -->
 	<WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
 
@@ -35,12 +35,15 @@
 					<File Id="PacketDotNet" Name="PacketDotNet.dll" DiskId="1" Source="release\PacketDotNet.dll" KeyPath="yes" Vital="yes">
 					</File>
 				</Component>
+
 				<Component Id="DLLSharpPcap" Guid="c70b8961-3a39-47e1-b400-c5cffa739d8d">
 					<File Id="SharpPcap" Name="SharpPcap.dll" DiskId="1" Source="release\SharpPcap.dll" KeyPath="yes" Vital="yes" />
 				</Component>
+
 				<Component Id="DLLLLDPBase" Guid="a9370c06-e330-4f9a-9ab5-dc5b8d5c60da">
 					<File Id="LLDPBase" Name="LLDPBase.dll" DiskId="1" Source="release\LLDPBase.dll" KeyPath="yes" Vital="yes" />
 				</Component>
+				<!-- /DLLs -->
 
 			</Directory>
 		</Directory>
