@@ -29,6 +29,7 @@
     <Property Id="MSIFASTINSTALL" Value="1" />
     <Media Id="1" Cabinet="Data.cab" EmbedCab="yes" DiskPrompt="[WelcomeDlg_Title]" CompressionLevel="high" />
     <Property Id="DiskPrompt" Value="[WelcomeDlg_Title]" />
+	<!-- Admin privileges required -->
     <Condition Message="$(loc.Error1925)"><![CDATA[Privileged]]></Condition>
     <!-- Ensure .Net 4.0 is installed -->
     <PropertyRef Id="NETFRAMEWORK40FULL" />
@@ -51,6 +52,7 @@
           <!-- Main EXE file -->
           <Component Id="MainExecutable" Guid="9a017631-7016-4f0f-a2bb-866be992ea9a">
             <File Id="ServiceEXE" Name="WinLLDPService.exe" DiskId="1" Source="release\WinLLDPService.exe" KeyPath="yes" Vital="yes" />
+			<!-- Service -->
             <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Name="$(var.ProductShortName)" DisplayName="$(var.ProductShortName)" Description="$(var.ProductShortName) by $(var.Manufacturer) Version: $(var.VersionNumber) Homepage: $(var.HomepageURL)" Start="auto" Account="[SERVICEACCOUNT]" Password="[SERVICEPASSWORD]" ErrorControl="normal" Interactive="no" Vital="yes">
               <util:ServiceConfig FirstFailureActionType="restart" SecondFailureActionType="restart" ThirdFailureActionType="restart" RestartServiceDelayInSeconds="300" ResetPeriodInDays="30" />
             </ServiceInstall>
