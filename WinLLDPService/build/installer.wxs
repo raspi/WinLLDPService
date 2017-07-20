@@ -76,7 +76,7 @@
         </Directory>
       </Directory>
     </Directory>
-    <Feature Id="Complete" Level="1" ConfigurableDirectory="INSTALLDIR" Title="$(var.ProductShortName)" Description="$(var.ProductShortName)" Display="hidden" Absent="disallow" TypicalDefault="install" InstallDefault="local" AllowAdvertise="yes">
+    <Feature Id="Complete" Level="1" ConfigurableDirectory="INSTALLDIR" Title="$(var.ProductShortName)" Description="$(var.ProductShortName)" Display="expand" Absent="disallow" TypicalDefault="install" InstallDefault="local" AllowAdvertise="yes">
       <ComponentRef Id="MainExecutable" Primary="yes" />
       <ComponentRef Id="DLLPacketDotNet" Primary="yes" />
       <ComponentRef Id="DLLSharpPcap" Primary="yes" />
