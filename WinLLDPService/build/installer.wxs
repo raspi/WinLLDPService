@@ -23,6 +23,7 @@
     <Property Id="ARPURLINFOABOUT">$(var.HomepageURL)</Property>
     <Property Id="ARPURLUPDATEINFO">$(var.HomepageURL)</Property>
     <Property Id="ARPNOREPAIR">1</Property>
+	<Property Id="ARPNOMODIFY">1</Property>
     <!-- Disable "Repair" option with install -->
     <Property Id="ARPPRODUCTICON" Value="icon.ico" />
     <Property Id="MSIFASTINSTALL" Value="1" />
