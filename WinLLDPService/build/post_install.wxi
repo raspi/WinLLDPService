@@ -3,11 +3,6 @@
 
 	<!-- Action(s) after (un)successful (un)install -->
 
-	<!-- Sequences -->
-	<InstallExecuteSequence>
-		<Custom Action="OpenURL" After="InstallFinalize" />
-	</InstallExecuteSequence>
-	
 	<!-- Open Install URL -->
 	<SetProperty Id="WixShellExecTarget" Action="SetInstallURL" Value="$(var.HomepageURL)install?ver=$(var.VersionNumber)&amp;arch=$(sys.BUILDARCH)&amp;ref=installer" Before="OpenURL" Sequence="execute">
 		<![CDATA[ NOT Installed ]]>
@@ -19,6 +14,22 @@
 	</SetProperty>
 
 	<!-- Open Install or Uninstall URL -->
-	<CustomAction Id="OpenURL" BinaryKey="WixCA" DllEntry="WixShellExec" Return="ignore" />	
-	
+	<CustomAction Id="OpenURL" BinaryKey="WixCA" DllEntry="WixShellExec" Return="ignore" />
+
+	<!-- Set install log location-->
+	<Property Id="WixShellExecTarget" Value="[MsiLogFileLocation]" />
+
+	<!-- Open log file -->
+	<CustomAction Id="OpenInstallLogFile" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+
+	<!-- Install sequences -->
+	<InstallExecuteSequence>
+		<!-- Open URL on (un)install -->
+		<Custom Action="OpenURL" After="InstallFinalize" />
+
+		<!-- Open log if install fails -->
+		<Custom Action="OpenInstallLogFile" OnExit="error" />
+	</InstallExecuteSequence>
+
+
 </Include>

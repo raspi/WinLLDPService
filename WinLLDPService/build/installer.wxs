@@ -19,14 +19,14 @@
 	<Product Name="$(var.ProductShortName) $(var.VersionNumber) ($(sys.BUILDARCH))" Manufacturer="$(var.Manufacturer)" Version="$(var.VersionNumber)" Language="1033" Codepage="1252" Id="408ea9f0-8118-4f0e-b618-62dd6b7dedb5" UpgradeCode="$(var.UpgradeCode)">
 		<Package Id="*" Keywords="[WelcomeDlg_Title]" Description="[WelcomeDlg_Title]" InstallerVersion="400" Languages="1033" Compressed="yes" SummaryCodepage="1252" InstallPrivileges="elevated" InstallScope="perMachine" Manufacturer="$(var.Manufacturer)" Comments="[WelcomeDlg_Title]" AdminImage="yes" />
 
+		<!-- Logging -->
+		<Property Id="MsiLogging" Value="v" />
 		<MajorUpgrade DowngradeErrorMessage="loc.NewerVersionInstalled" Schedule="afterInstallInitialize" IgnoreRemoveFailure="no" AllowSameVersionUpgrades="no" AllowDowngrades="no" />
 
 		<?include $(sys.CURRENTDIR)requirements.wxi ?>
 		<?include $(sys.CURRENTDIR)files.wxi ?>
 
 		<?include $(sys.CURRENTDIR)control_panel.wxi ?>
-
-		<Property Id="MsiLogging" Value="v" />
 
 		<Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
 		<Property Id="MSIFASTINSTALL" Value="1" />
