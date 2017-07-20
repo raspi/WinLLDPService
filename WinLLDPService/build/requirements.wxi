@@ -2,7 +2,7 @@
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
 	<!-- Admin privileges required -->
-	<Condition Message="$(loc.Error1925)">
+	<Condition Message="!(loc.Error1925)">
 		<![CDATA[Privileged]]>
 	</Condition>
 
