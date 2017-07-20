@@ -27,7 +27,7 @@
     <Property Id="MSIFASTINSTALL" Value="1" />
     <Media Id="1" Cabinet="Data.cab" EmbedCab="yes" DiskPrompt="CD-ROM #1" CompressionLevel="high" />
     <Property Id="DiskPrompt" Value="$(var.ProductShortName) Installation [1]" />
-    <Condition Message="You must have Administrative rights on this machine to install [ProductName]."><![CDATA[Privileged]]></Condition>
+    <Condition Message="$(loc.Error1925)"><![CDATA[Privileged]]></Condition>
     <!-- Ensure .Net 4.0 is installed -->
     <PropertyRef Id="NETFRAMEWORK40FULL" />
     <Condition Message="This setup requires the .NET Framework 4.0 to be installed."><![CDATA[ Installed OR NETFRAMEWORK40FULL ]]></Condition>
@@ -87,7 +87,7 @@
     <UIRef Id="WixUI_Mondo" />
     <UIRef Id="WixUI_ErrorProgressText" />
     <WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
-    <MajorUpgrade DowngradeErrorMessage="Older version of [ProductName] is already installed. Setup will now exit." />
+    <MajorUpgrade DowngradeErrorMessage="loc.NewerVersionInstalled" Schedule="afterInstallInitialize" IgnoreRemoveFailure="no" AllowSameVersionUpgrades="no" AllowDowngrades="no" />
     <Property Id="InstallURL">$(var.HomepageURL)install?ver=$(var.VersionNumber)</Property>
     <Property Id="UninstallURL">$(var.HomepageURL)uninstall?ver=$(var.VersionNumber)</Property>
     <!-- Set value of WixShellExecTarget property to value of InstallURL if this is first time install -->
