@@ -55,3 +55,4 @@ packages/*
 *.log
 
 WinLLDPService/build/chocolatey/*.nupkg
+WinLLDPService/build/version.wxi
