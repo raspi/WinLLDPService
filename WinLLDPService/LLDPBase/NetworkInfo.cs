@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 
 namespace WinLLDPService
@@ -10,11 +9,32 @@ namespace WinLLDPService
         /// <summary>
         /// Convert network mask to CIDR notation
         /// </summary>
-        /// <param name="ip"></param>
+        /// <param name="ip">Network mask</param>
         /// <returns></returns>
         public static int GetCIDRFromIPMaskAddress(IPAddress ip)
         {
-            return Convert.ToString(BitConverter.ToInt32(ip.GetAddressBytes(), 0), 2).ToCharArray().Count(x => x == '1');
+
+            byte[] bytes = ip.GetAddressBytes();
+
+            int cidrnet = 0;
+            bool zeroed = false;
+
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                for (int v = bytes[i]; (v & 0xFF) != 0; v = v << 1)
+                {
+                    if (zeroed)
+                        // invalid netmask
+                        return ~cidrnet;
+
+                    if ((v & 0x80) == 0)
+                        zeroed = true;
+                    else
+                        cidrnet++;
+                }
+            }
+
+            return cidrnet;
         }
 
         /// <summary>
