@@ -192,7 +192,7 @@ namespace WinLLDPService
 
             IPInterfaceProperties ipProperties = adapter.GetIPProperties();
             IPv4InterfaceProperties ipv4Properties = null; // Ipv4
-            IPv6InterfaceProperties ipv6Properties = null;// Ipv6
+            IPv6InterfaceProperties ipv6Properties = null; // Ipv6
 
             // IPv6
             if (adapter.Supports(NetworkInterfaceComponent.IPv6))
