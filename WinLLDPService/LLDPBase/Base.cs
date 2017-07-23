@@ -412,6 +412,7 @@ namespace WinLLDPService
                 return;
             }
 
+            // Wait time in milliseconds
             int waitTime = 2000;
 
             // Open selected adapters
