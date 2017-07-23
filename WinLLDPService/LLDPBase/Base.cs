@@ -382,7 +382,7 @@ namespace WinLLDPService
         /// <returns>bool</returns>
         private bool SendRawPacket(NetworkInterface adapter, Packet payload)
         {
-            Debug.WriteLine("Sending RAW packet", EventLogEntryType.Information);
+            Debug.WriteLine(String.Format("Sending RAW packet through adapter {1} '{0}'", adapter.Name, adapter.GetPhysicalAddress()), EventLogEntryType.Information);
 
             PcapDevice device = (PcapDevice)CaptureDeviceList.Instance.Where(x => x.MacAddress.Equals(adapter.GetPhysicalAddress())).First();
 
