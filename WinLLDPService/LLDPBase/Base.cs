@@ -37,13 +37,21 @@ namespace WinLLDPService
             List<NetworkInterface> adapters = new List<NetworkInterface>();
 
             // Get list of connected adapters
-            Debug.WriteLine("Getting connected adapter list", EventLogEntryType.Information);
+            Debug.WriteLine("Getting connected adapter list..", EventLogEntryType.Information);
             adapters = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(
-                x =>
-                x.NetworkInterfaceType != NetworkInterfaceType.Loopback
-                &&
-                x.OperationalStatus == OperationalStatus.Up
+                  x =>
+                  // Link is up
+                  x.OperationalStatus == OperationalStatus.Up
+                  &&
+                  // Not loopback (127.0.0.1 / ::1)
+                  x.NetworkInterfaceType != NetworkInterfaceType.Loopback
+                  &&
+                  // Not tunnel
+                  x.NetworkInterfaceType != NetworkInterfaceType.Tunnel
+                  &&
+                  // Supports IPv4 or IPv6
+                  (x.Supports(NetworkInterfaceComponent.IPv4) || x.Supports(NetworkInterfaceComponent.IPv6))
                 )
                 .ToList();
 
