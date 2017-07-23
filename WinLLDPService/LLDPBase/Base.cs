@@ -423,25 +423,27 @@ namespace WinLLDPService
             // Wait adapters to open
             foreach (PcapDevice device in selected)
             {
-                DateTime startingtime = DateTime.Now;
-
-                // Wait max of 2 seconds to adapter to open
-                startingtime.AddMilliseconds(waitTime);
                 bool wait = true;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
 
                 do
                 {
-                    // Check
-                    if (device.Opened || DateTime.Now >= startingtime)
+                    // Check that adapter has opened or timer has elapsed
+                    if (device.Opened || sw.ElapsedMilliseconds >= waitTime)
                     {
                         wait = false;
                         break;
                     }
 
                     // Sleep
-                    System.Threading.Thread.Sleep(10);
+                    System.Threading.Thread.Sleep(15);
 
                 } while (wait);
+
+                sw.Stop();
+                
             }
 
         }
