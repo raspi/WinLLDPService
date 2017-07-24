@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<Include xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 
 	<!-- Admin privileges required -->
 	<Condition Message="!(loc.Error1925)">
 		<![CDATA[Privileged]]>
 	</Condition>
 
-	<!-- Ensure .Net 4.0 is installed -->
-	<PropertyRef Id="NETFRAMEWORK40FULL" />
-	<Condition Message="This setup requires the .NET Framework 4.0 to be installed.">
-		<![CDATA[ Installed OR NETFRAMEWORK40FULL ]]>
+	<!-- Ensure .Net 4.5.1 is installed -->
+	<PropertyRef Id="WIX_IS_NETFRAMEWORK_451_OR_LATER_INSTALLED" />
+	<Condition Message="This setup requires the .NET Framework 4.5.1 to be installed.">
+		<![CDATA[ Installed OR WIX_IS_NETFRAMEWORK_451_OR_LATER_INSTALLED ]]>
 	</Condition>
 
 	<!-- Check WinPCap -->

@@ -14,7 +14,7 @@
 <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
 <?endif ?>
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 	<?include $(sys.CURRENTDIR)version.wxi ?>
 	<Product Name="$(var.ProductShortName) $(var.VersionNumber) ($(sys.BUILDARCH))" Manufacturer="$(var.Manufacturer)" Version="$(var.VersionNumber)" Language="1033" Codepage="1252" Id="408ea9f0-8118-4f0e-b618-62dd6b7dedb5" UpgradeCode="$(var.UpgradeCode)">
 
