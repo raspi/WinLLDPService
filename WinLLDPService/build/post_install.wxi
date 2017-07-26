@@ -25,10 +25,10 @@
 	<!-- Install sequences -->
 	<InstallExecuteSequence>
 		<!-- Open URL on (un)install -->
-		<Custom Action="OpenURL" After="InstallFinalize" />
+		<Custom Action="OpenURL" After="InstallFinalize"><![CDATA[ UILevel > 2 ]]></Custom>
 
 		<!-- Open log if install fails -->
-		<Custom Action="OpenInstallLogFile" OnExit="error" />
+		<Custom Action="OpenInstallLogFile" OnExit="error"><![CDATA[ UILevel > 2 ]]></Custom>
 	</InstallExecuteSequence>
 
 
