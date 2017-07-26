@@ -12,19 +12,4 @@
 		<![CDATA[ Installed OR WIX_IS_NETFRAMEWORK_451_OR_LATER_INSTALLED ]]>
 	</Condition>
 
-	<!-- Check WinPCap -->
-	<Property Id="WINPCAPISINSTALLED">
-		<RegistrySearch Id="RegistrySearchWinPcapKey" Type="raw" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" />
-	</Property>
-	<Property Id="WINPCAPMAJORVER">
-		<RegistrySearch Id="RegistrySearchWinPcapMajor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMajor" Type="raw" />
-	</Property>
-	<Property Id="WINPCAPMINORVER">
-		<RegistrySearch Id="RegistrySearchWinPcapMinor" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WinPcapInst" Name="VersionMinor" Type="raw" />
-	</Property>
-
-	<Condition Message="This setup requires WinPcap to be installed.">
-		<![CDATA[ NOT WINPCAPISINSTALLED OR ( 4 > WINPCAPMAJORVER AND 1 > WINPCAPMINORVER) ]]>
-	</Condition>
-
 </Include>
