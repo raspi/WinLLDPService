@@ -18,7 +18,6 @@
     <summary>Small LLDP Windows Service</summary>
     <description>Small LLDP Windows Service. Used by network switches to list network devices.</description>
     <dependencies>
-      <dependency id="winpcap" version="4.1.3" />
       <dependency id="chocolatey-uninstall.extension" />
     </dependencies>
   </metadata>
