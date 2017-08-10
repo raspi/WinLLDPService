@@ -7,6 +7,9 @@ param (
 
 Push-Location "$PSScriptRoot"
 
+# Remove old files
+Get-ChildItem -Path "$release_dir" -Include *.msi -File | foreach { $_.Delete()}
+
 $release_dir = "$pwd/release"
 
 if(![System.IO.Directory]::Exists("$release_dir")) {
