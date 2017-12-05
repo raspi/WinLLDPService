@@ -14,17 +14,29 @@
 
 ### In case of bug report: Is machine connected to Active Directory?
 
+<!-- NOTE: Specify what Windows version is running AD -->
+<!-- NOTE: Specify if you're using Samba ( https://www.samba.org/ ) as AD -->
+
  - [ ] Yes
 
-<!-- NOTE: Specify what Windows version is running AD -->
-<!-- NOTE: Specify if you're using [Samba](https://www.samba.org/) as AD -->
+> …
 
 ### In case of bug report: Version the issue has been seen with
 
 > …
 
 <!-- NOTE: Do not submit bug reports about anything but the two most recently released versions! -->
-<!-- Note see homepage https://raspi.github.io/projects/winlldpservice/ for latest releases -->
+<!-- NOTE: see homepage https://raspi.github.io/projects/winlldpservice/ for latest releases -->
+
+### In case of bug report: Capture library used
+<!-- For example: npcap v0.97 -->
+<!-- Did you try also with different capture library (npcap, win10pcap, winpcap, ..)? -->
+
+> …
+
+<!-- If npcap was used add also the logs: https://github.com/nmap/npcap#bug-report (Diagnostic report, General installation log, Driver installation log) -->
+<!-- If winpcap was used add also the logs: https://winpcap.org/bugs.htm -->
+<!-- If win10pcap was used add also the logs: see https://winpcap.org/bugs.htm -->
 
 ### In case of bug report: Expected behaviour you didn't see
 <!-- NOTE: For example: switch didn't receive any LLDP information -->
@@ -53,6 +65,14 @@
 <!-- If installer failed to install the software please provide installer `.log` as attachment by running (as admin): -->
 <!--
     msiexec /i "installer.msi" /L*V "install.txt" 
+-->
+<!-- List of adapters (PowerShell): -->
+<!-- 
+  Get-NetAdapter | select *
+-->
+<!-- List of adapters (PowerShell): -->
+<!-- 
+  Get-WmiObject -Class Win32_NetworkAdapter | select *
 -->
 
 > …
