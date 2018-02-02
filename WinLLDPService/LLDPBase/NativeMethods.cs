@@ -1,18 +1,14 @@
-﻿using System;
-
-/// <summary>
-/// Base classes needed to 
-/// - Get adapters
-/// - Construct packets
-/// - Send packets
-/// </summary>
-namespace WinLLDPService
+﻿namespace WinLLDPService
 {
+    using System.Runtime.InteropServices;
+
+    /// <summary>
+    /// Native methods
+    /// </summary>
     internal static class NativeMethods
     {
         // Uptime
-        [System.Runtime.InteropServices.DllImport("kernel32")]
-        internal static extern UInt64 GetTickCount64();
-
+        [DllImport("kernel32")]
+        internal static extern ulong GetTickCount64();
     }
 }
