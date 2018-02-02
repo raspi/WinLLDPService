@@ -1,16 +1,28 @@
-﻿using System;
-using System.Diagnostics;
-using System.ServiceProcess;
-using System.Timers;
-
-namespace WinLLDPService
+﻿namespace WinLLDPService
 {
+    using System;
+    using System.Diagnostics;
+    using System.ServiceProcess;
+    using System.Timers;
+
+    /// <summary>
+    /// The win lldp service.
+    /// </summary>
     public sealed partial class WinLLDPService : ServiceBase
     {
-
+        /// <summary>
+        /// The my service name.
+        /// </summary>
         public const string MyServiceName = "WinLLDPService";
 
+        /// <summary>
+        /// The timer.
+        /// </summary>
         Timer timer;
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
         WinLLDP run;
 
         /// <summary>
@@ -18,7 +30,7 @@ namespace WinLLDPService
         /// </summary>
         public WinLLDPService()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>
@@ -26,30 +38,29 @@ namespace WinLLDPService
         /// </summary>
         private void InitializeComponent()
         {
+            this.run = new WinLLDP(OsInfo.GetStaticInfo());
 
-            run = new WinLLDP(OsInfo.GetStaticInfo());
+            this.ServiceName = MyServiceName;
+            this.CanStop = true;
 
-            ServiceName = MyServiceName;
-            CanStop = true;
+            this.EventLog.Source = this.ServiceName;
+            this.EventLog.Log = "Application";
 
-            EventLog.Source = ServiceName;
-            EventLog.Log = "Application";
-
-            if (!EventLog.SourceExists(EventLog.Source))
+            if (!EventLog.SourceExists(this.EventLog.Source))
             {
                 // Create Windows Event Log source if it doesn't exist
-                EventLog.CreateEventSource(EventLog.Source, this.EventLog.Log);
+                EventLog.CreateEventSource(this.EventLog.Source, this.EventLog.Log);
             }
 
-            ReduceMemory();
+            this.ReduceMemory();
 
             // Run the LLDP packet sender every 30 seconds
-            timer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds)
+            this.timer = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds)
             {
                 AutoReset = true
             };
 
-            timer.Elapsed += SendPacket;
+            this.timer.Elapsed += this.SendPacket;
         }
 
 
@@ -61,20 +72,20 @@ namespace WinLLDPService
             try
             {
                 // Run the LLDP packet sender  
-                run.Run();
-                ReduceMemory();
+                this.run.Run();
+                this.ReduceMemory();
             }
-            catch (System.DllNotFoundException ex)
+            catch (DllNotFoundException ex)
             {
                 // Log run error(s) to Windows Event Log
-                EventLog.WriteEntry("Missing DLL: " + ex.ToString(), EventLogEntryType.Error);
+                this.EventLog.WriteEntry("Missing DLL: " + ex, EventLogEntryType.Error);
 
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {
                 // Log run error(s) to Windows Event Log
-                EventLog.WriteEntry("Packet sent failed: " + ex.ToString(), EventLogEntryType.Warning);
+                this.EventLog.WriteEntry("Packet sent failed: " + ex, EventLogEntryType.Warning);
             }
         }
 
@@ -91,9 +102,10 @@ namespace WinLLDPService
             } catch (Exception ex)
             {
                 // Log error(s) to Windows Event Log
-                EventLog.WriteEntry("Freeing memory error: " + ex.ToString(), EventLogEntryType.Warning);
+                this.EventLog.WriteEntry("Freeing memory error: " + ex, EventLogEntryType.Warning);
             }
         }
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -107,7 +119,7 @@ namespace WinLLDPService
         /// </summary>
         protected override void OnStart(string[] args)
         {
-            timer.Start();
+            this.timer.Start();
         }
 
         /// <summary>
@@ -115,8 +127,8 @@ namespace WinLLDPService
         /// </summary>
         protected override void OnStop()
         {
-            timer.Stop();
-            run.Stop();
+            this.timer.Stop();
+            this.run.Stop();
         }
     }
 }

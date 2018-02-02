@@ -1,39 +1,59 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Management;
-
-namespace WinLLDPService
+﻿namespace WinLLDPService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Management;
 
+    using Microsoft.Win32;
+
+    /// <summary>
+    /// The os info.
+    /// </summary>
     public class OsInfo
     {
-        public static string HKLM_GetString(string path, string key)
+        /// <summary>
+        /// The hkl m_ get string.
+        /// </summary>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string HklmGetString(string path, string key)
         {
             try
             {
                 RegistryKey rk = Registry.LocalMachine.OpenSubKey(path);
-                if (rk == null) return "";
+
+                if (rk == null)
+                {
+                    return string.Empty;
+                }
+
                 return (string)rk.GetValue(key);
             }
             catch
             {
             }
 
-            return "";
+            return string.Empty;
         }
 
         /// <summary>
-        /// 
+        /// Shorten the operating system name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public static string ReplaceName(string name)
         {
             return name
-                .Replace("Microsoft", "")
+                .Replace("Microsoft", string.Empty)
                 .Replace("Windows", "Win")
                 .Replace("Professional", "Pro")
                 .Replace("Ultimate", "Ult")
@@ -50,17 +70,17 @@ namespace WinLLDPService
         /// <returns></returns>
         public static string FriendlyName()
         {
-            string Name = "?";
+            string name = "?";
 
-            string ProductName = HKLM_GetString(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName");
-            string CSDVersion = HKLM_GetString(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CSDVersion");
+            string productName = HklmGetString(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName");
+            string csdVersion = HklmGetString(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CSDVersion");
 
-            if (!String.IsNullOrEmpty(ProductName))
+            if (!string.IsNullOrEmpty(productName))
             {
-                Name = (ProductName.StartsWith("Microsoft") ? "" : "Microsoft ") + ProductName + (CSDVersion != "" ? " " + CSDVersion : "");
+                name = (productName.StartsWith("Microsoft") ? string.Empty : "Microsoft ") + productName + (csdVersion != string.Empty ? " " + csdVersion : string.Empty);
             }
 
-            return Name.Trim();
+            return name.Trim();
         }
 
         /// <summary>
@@ -70,7 +90,7 @@ namespace WinLLDPService
         public static string GetUptime()
         {
             TimeSpan uptime = TimeSpan.FromMilliseconds(NativeMethods.GetTickCount64());
-            return String.Format("{0:000}d{1:00}h{2:00}m{3:00}s", uptime.Days, uptime.Hours, uptime.Minutes, uptime.Seconds);
+            return string.Format("{0:000}d{1:00}h{2:00}m{3:00}s", uptime.Days, uptime.Hours, uptime.Minutes, uptime.Seconds);
         }
 
         /// <summary>
@@ -92,36 +112,34 @@ namespace WinLLDPService
             // Find all explorer.exe processes
             foreach (Process p in Process.GetProcessesByName("explorer"))
             {
-                foreach (ManagementObject mo in new ManagementObjectSearcher(new ObjectQuery(String.Format(query, p.Id))).Get())
+                foreach (ManagementObject mo in new ManagementObjectSearcher(new ObjectQuery(string.Format(query, p.Id))).Get())
                 {
                     string[] s = new string[2];
-                    mo.InvokeMethod("GetOwner", (object[])s);
+                    mo.InvokeMethod("GetOwner", s);
 
-                    string user = s[0].ToString();
-                    string domain = s[1].ToString();
+                    string user = s[0];
+                    string domain = s[1];
 
-                    UserInfo ui = new UserInfo()
-                    {
+                    UserInfo ui = new UserInfo
+                                      {
                         Username = user,
-                        Domain = domain,
+                        Domain = domain
                     };
 
-                    if (users.Where(x => x.Domain == domain && x.Username == user).Count() == 0)
+                    // Add to list
+                    if (!users.Any(x => x.Domain == domain && x.Username == user))
                     {
                         users.Add(ui);
                     }
-
                 }
-
             }
 
             return users.OrderBy(x => x.Domain).ThenBy(x => x.Username).ToList();
-
         }
 
         public static string GetServiceTag()
         {
-            string tag = "";
+            string tag = string.Empty;
 
             foreach (ManagementObject obj in new ManagementObjectSearcher(new SelectQuery("Win32_Bios")).Get())
             {
@@ -143,7 +161,7 @@ namespace WinLLDPService
                 "oem",
                 "o.e.m.",
                 "n/a",
-                "na",
+                "na"
             };
 
             if (!invalid.Any(tag.ToLower().Contains))
@@ -168,12 +186,12 @@ namespace WinLLDPService
         /// <returns></returns>
         public static StaticInfo GetStaticInfo()
         {
-            StaticInfo si = new StaticInfo()
-            {
+            StaticInfo si = new StaticInfo
+                                {
                 OperatingSystemFriendlyName = ReplaceName(FriendlyName()).Trim(),
                 OperatingSystemVersion = ReplaceName(Environment.OSVersion.ToString().Trim()),
                 ServiceTag = GetServiceTag(),
-                MachineName = Environment.MachineName,
+                MachineName = Environment.MachineName
             };
 
             return si;
