@@ -1,8 +1,6 @@
-﻿using System;
-using System.Net;
-
-namespace WinLLDPService
+﻿namespace WinLLDPService
 {
+    using System.Net;
 
     class NetworkInfo
     {
@@ -19,18 +17,24 @@ namespace WinLLDPService
             int cidrnet = 0;
             bool zeroed = false;
 
-            for (var i = 0; i < bytes.Length; i++)
+            foreach (var t in bytes)
             {
-                for (int v = bytes[i]; (v & 0xFF) != 0; v = v << 1)
+                for (int v = t; (v & 0xFF) != 0; v = v << 1)
                 {
                     if (zeroed)
+                    {
                         // invalid netmask
                         return ~cidrnet;
+                    }
 
                     if ((v & 0x80) == 0)
+                    {
                         zeroed = true;
+                    }
                     else
+                    {
                         cidrnet++;
+                    }
                 }
             }
 
@@ -53,7 +57,7 @@ namespace WinLLDPService
                 ++unit;
             }
 
-            return String.Format("{0:G4}{1}", size, units[unit]);
+            return string.Format("{0:G4}{1}", size, units[unit]);
         }
 
 
