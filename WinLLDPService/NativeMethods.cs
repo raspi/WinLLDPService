@@ -1,12 +1,17 @@
-﻿using System;
-using System.ServiceProcess;
-using System.Runtime.InteropServices;
-
-namespace WinLLDPService
+﻿namespace WinLLDPService
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.ServiceProcess;
+
+    /// <summary>
+    /// Native methods
+    /// </summary>
     public partial class WinLLDPService : ServiceBase
     {
-
+        /// <summary>
+        /// The native methods.
+        /// </summary>
         internal static class NativeMethods
         {
             [DllImport("psapi.dll")]
