@@ -43,7 +43,6 @@
             SendPacket();
 
             // Run the LLDP packet sender every X seconds
-            Debug.WriteLine("Starting timer", EventLogEntryType.Information);
             timer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
             timer.AutoReset = true;
             timer.Elapsed += TriggerEvent;
