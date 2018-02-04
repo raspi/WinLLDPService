@@ -4,10 +4,12 @@
     using System.Diagnostics;
     using System.Timers;
 
+    using Timer = System.Timers.Timer;
+
     /// <summary>
     /// CLI EXE for quickly debug sent LLDP packets without the need of starting Windows Service
     /// </summary>
-    static class LLDPSender
+    internal static class LLDPSender
     {
         /// <summary>
         /// The timer.
@@ -27,7 +29,6 @@
         /// </param>
         public static void Main(string[] args)
         {
-
             Debug.AutoFlush = true;
             Debug.IndentLevel = 0;
 
@@ -35,7 +36,8 @@
             TextWriterTraceListener writer = new TextWriterTraceListener(Console.Out);
             Debug.Listeners.Add(writer);
 
-            run = new WinLLDP(OsInfo.GetStaticInfo());
+            string configFile = PowerShellConfigurator.FindConfigurationFile();
+            run = new WinLLDP(configFile);
 
             // Send first packet immediately
             SendPacket();
@@ -52,7 +54,6 @@
             Console.ReadKey();
 
             timer.Stop();
-
         }
 
         /// <summary>
@@ -70,7 +71,7 @@
         }
 
         /// <summary>
-        /// The send packet.
+        /// Send LLDP packet.
         /// </summary>
         private static void SendPacket()
         {

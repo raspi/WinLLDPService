@@ -24,23 +24,18 @@
     /// </summary>
     public class WinLLDP
     {
-        /// <summary>
-        /// Gets or sets the static information.
-        /// </summary>
-        public StaticInfo StaticInformation { get; set; }
+        protected string ConfigurationFilePath { get; set; }
 
         /// <summary>
         /// The LLDP destination mac address.
         /// </summary>
-        public static readonly PhysicalAddress LldpDestinationMacAddress = new PhysicalAddress(new byte[] { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x0e });
+        public static readonly PhysicalAddress LldpDestinationMacAddress = new PhysicalAddress(
+            new byte[] { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x0e }
+        );
 
-        /// <summary>
-        /// Set static information
-        /// </summary>
-        /// <param name="si"></param>
-        public WinLLDP(StaticInfo si)
+        public WinLLDP(string powerShellConfigurationScript)
         {
-            this.StaticInformation = si;
+            this.ConfigurationFilePath = powerShellConfigurationScript;
         }
 
         /// <summary>
@@ -80,50 +75,7 @@
                 return true;
             }
 
-            // Get list of users
-            List<UserInfo> users = OsInfo.GetUsers();
-
-            if (users.Count == 0)
-            {
-                Debug.WriteLine("No users found.", EventLogEntryType.Error);
-            }
-
-            // Get information which doesn't change often or doesn't need to be 100% accurate in realtime when iterating through adapters
-            PacketInfo pinfo = new PacketInfo
-            {
-                OperatingSystem = this.StaticInformation.OperatingSystemFriendlyName,
-                OperatingSystemVersion = this.StaticInformation.OperatingSystemVersion,
-                Tag = this.StaticInformation.ServiceTag,
-                Uptime = OsInfo.GetUptime(),
-                MachineName = this.StaticInformation.MachineName
-            };
-
-            bool first = true;
-            string olddomain = string.Empty;
-            string userlist = string.Empty;
-
-            foreach (UserInfo ui in users)
-            {
-                string domain = ui.Domain;
-
-                if (domain != olddomain)
-                {
-                    first = true;
-                }
-
-                if (first)
-                {
-                    userlist += domain + ": ";
-                    olddomain = domain;
-                    first = false;
-                }
-
-                userlist += ui.Username + ", ";
-
-            }
-
-            pinfo.Username = userlist.Trim().TrimEnd(',');
-
+            Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath);
             CaptureDeviceList devices = CaptureDeviceList.Instance;
 
             // Wait time in milliseconds
@@ -134,12 +86,12 @@
             {
                 sw.Reset();
 
-                Debug.WriteLine(string.Format("Adapter {0}:", adapter.Name), EventLogEntryType.Information);
+                Debug.WriteLine(string.Format("Adapter '{0}':", adapter.Name), EventLogEntryType.Information);
 
                 try
                 {
                     Debug.WriteLine("Generating packet", EventLogEntryType.Information);
-                    Packet packet = this.CreateLLDPPacket(adapter, pinfo);
+                    Packet packet = this.CreateLLDPPacket(adapter, config);
                     Debug.IndentLevel = 0;
                     Debug.WriteLine("Sending packet", EventLogEntryType.Information);
 
@@ -204,48 +156,13 @@
         {
         }
 
-
-
-        /// <summary>
-        /// TLV value's length can be only 0-511 bytes
-        /// Organizational spesific TLV value's length can be only 0-507 bytes
-        /// </summary>
-        /// <param name="dict"></param>
-        /// <returns></returns>
-        private string CreateTlvString(Dictionary<string, string> dict)
-        {
-            int maxlen = 507;
-
-            string o = string.Empty;
-
-            foreach (var s in dict)
-            {
-                string tmp = string.Format("{0}:{1} | ", s.Key, s.Value);
-
-                if ((tmp.Length + o.Length) <= maxlen)
-                {
-                    o += tmp;
-                }
-                else
-                {
-                    Debug.WriteLine("Data doesn't fit to string", EventLogEntryType.Warning);
-                }
-            }
-
-            o = o.Trim().TrimEnd('|');
-
-            Debug.WriteLine(o);
-
-            return o;
-        }
-
         /// <summary>
         /// Generate LLDP packet for adapter
         /// </summary>
         /// <param name="adapter">Network adapter</param>
         /// <param name="pinfo">Packet information</param>
         /// <exception cref="ArgumentNullException"></exception>
-        private Packet CreateLLDPPacket(NetworkInterface adapter, PacketInfo pinfo)
+        private Packet CreateLLDPPacket(NetworkInterface adapter, Configuration config)
         {
             Debug.IndentLevel = 2;
 
@@ -283,82 +200,8 @@
                 }
             }
 
-
-            // System description
-            Dictionary<string, string> systemDescription = new Dictionary<string, string>
-            {
-                { "OS", pinfo.OperatingSystem },
-                { "Id", pinfo.Tag },
-                { "U", pinfo.Username },
-                { "Up", pinfo.Uptime },
-                { "Ver", pinfo.OperatingSystemVersion }
-            };
-
-            // Port description
-            Dictionary<string, string> portDescription = new Dictionary<string, string>();
-
-            // Gateway
-            if (ipProperties.GatewayAddresses.Count > 0)
-            {
-                portDescription.Add("GW", string.Join(", ", ipProperties.GatewayAddresses.Select(i => i.Address.ToString()).ToArray()).Trim().Trim(','));
-            }
-            else
-            {
-                portDescription.Add("GW", "-");
-            }
-
-            // CIDR
-            if (ipProperties.UnicastAddresses.Count > 0)
-            {
-                int[] mask = ipProperties.UnicastAddresses
-                    .Where(
-                      w => w.IPv4Mask.AddressFamily == AddressFamily.InterNetwork
-                    )
-                    .Select(x => NetworkInfo.GetCIDRFromIPMaskAddress(x.IPv4Mask))
-                    .ToArray()
-                    ;
-
-                portDescription.Add("NM", string.Join(", ", mask).Trim().Trim(','));
-            }
-            else
-            {
-                portDescription.Add("NM", "-");
-            }
-
-
-            // DNS server(s)
-            if (ipProperties.DnsAddresses.Count > 0)
-            {
-                portDescription.Add("DNS", string.Join(", ", ipProperties.DnsAddresses.Select(i => i.ToString()).ToArray()).Trim().Trim(','));
-            }
-            else
-            {
-                portDescription.Add("DNS", "-");
-            }
-
-            // DHCP server
-            if (ipProperties.DhcpServerAddresses.Count > 0)
-            {
-                portDescription.Add("DHCP", string.Join(", ", ipProperties.DhcpServerAddresses.Select(i => i.ToString()).ToArray()).Trim().Trim(','));
-            }
-            else
-            {
-                portDescription.Add("DHCP", "-");
-            }
-
-            // WINS server(s)
-            if (ipProperties.WinsServersAddresses.Count > 0)
-            {
-                portDescription.Add("WINS", string.Join(", ", ipProperties.WinsServersAddresses.Select(i => i.ToString()).ToArray()).Trim().Trim(','));
-            }
-
-
-            // Link speed
-            portDescription.Add("Spd", NetworkInfo.ReadableSize(adapter.Speed));
-
-            // adapter.Description is for example "Intel(R) 82579V Gigabit Network Connection"
-            // Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkCards\<number>\Description value
-            portDescription.Add("Vendor", adapter.Description);
+            config.PortDescription.Add(string.Format("Spd: {0}", NetworkInfo.ReadableSize(adapter.Speed)));
+            config.PortDescription.Add(string.Format("Vendor: {0}", adapter.Description));
 
             // Capabilities enabled
             List<CapabilityOptions> capabilitiesEnabled = new List<CapabilityOptions>
@@ -374,10 +217,9 @@
             lldpPacket.TlvCollection.Add(new ChassisID(ChassisSubTypes.MACAddress, macAddress));
             lldpPacket.TlvCollection.Add(new PortID(PortSubTypes.LocallyAssigned, Encoding.UTF8.GetBytes(adapter.Name)));
             lldpPacket.TlvCollection.Add(new TimeToLive(120));
-            lldpPacket.TlvCollection.Add(new PortDescription(this.CreateTlvString(portDescription)));
-
-            lldpPacket.TlvCollection.Add(new SystemName(pinfo.MachineName));
-            lldpPacket.TlvCollection.Add(new SystemDescription(this.CreateTlvString(systemDescription)));
+            lldpPacket.TlvCollection.Add(new PortDescription(string.Join(config.Separator, config.PortDescription)));
+            lldpPacket.TlvCollection.Add(new SystemName(config.MachineName));
+            lldpPacket.TlvCollection.Add(new SystemDescription(string.Join(config.Separator, config.SystemDescription)));
             lldpPacket.TlvCollection.Add(new SystemCapabilities(expectedSystemCapabilitiesCapability, expectedSystemCapabilitiesEnabled));
 
             // Add management address(es)

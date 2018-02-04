@@ -38,7 +38,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.run = new WinLLDP(OsInfo.GetStaticInfo());
+            string configFile = PowerShellConfigurator.FindConfigurationFile();
+            this.run = new WinLLDP(configFile);
 
             this.ServiceName = MyServiceName;
             this.CanStop = true;
