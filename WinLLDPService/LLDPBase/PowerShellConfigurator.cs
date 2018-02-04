@@ -9,8 +9,30 @@
     using System.Threading;
     using System.Timers;
 
+    using Microsoft.Win32;
+
     public static class PowerShellConfigurator
     {
+        public static string HklmGetString(string path, string key)
+        {
+            try
+            {
+                RegistryKey rk = Registry.LocalMachine.OpenSubKey(path);
+
+                if (rk == null)
+                {
+                    return string.Empty;
+                }
+
+                return (string)rk.GetValue(key);
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
+        }
+
         /// <summary>
         /// The find configuration file.
         /// </summary>
@@ -21,14 +43,15 @@
         {
             List<string> files = new List<string>
                                      {
-                                         "configuration.ps1", 
-                                         "configuration.default.ps1",
+                                         "Configuration.ps1",
+                                         "Configuration.default.ps1",
                                      };
 
             List<string> paths = new List<string>
             {
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinLLDPService"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WinLLDPService"),
+                HklmGetString(Path.Combine("Software", "WinLLDPService"), "InstallPath"),
                 Directory.GetCurrentDirectory(),
             };
 
