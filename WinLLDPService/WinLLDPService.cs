@@ -56,6 +56,8 @@
             {
                 string configFile = PowerShellConfigurator.FindConfigurationFile();
 
+                this.EventLog.WriteEntry(string.Format("Using configuration file '{0}'", configFile), EventLogEntryType.Information);
+
                 // Run the service
                 this.run = new WinLLDP(configFile);
             }
