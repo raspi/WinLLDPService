@@ -31,7 +31,7 @@
 					<File Id="PSConfigurationScript" Name="Configuration.default.ps1" DiskId="1" Source="release\configuration.default.ps1" KeyPath="no" Vital="yes" />
 
 					<!-- Registry -->
-					<RegistryKey Root="HKLM" Key="SOFTWARE\$(var.Manufacturer)\$(var.ProductShortName)" Action="createAndRemoveOnUninstall"> 
+					<RegistryKey Root="HKLM" Key="Software\$(var.ProductShortName)" Action="createAndRemoveOnUninstall"> 
 						<RegistryValue Type="string" Name="InstallPath" Value="[INSTALLDIR]" />
 					</RegistryKey>
 					
