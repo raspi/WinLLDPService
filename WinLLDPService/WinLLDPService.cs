@@ -38,9 +38,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            string configFile = PowerShellConfigurator.FindConfigurationFile();
-            this.run = new WinLLDP(configFile);
-
             this.ServiceName = MyServiceName;
             this.CanStop = true;
 
@@ -51,6 +48,19 @@
             {
                 // Create Windows Event Log source if it doesn't exist
                 EventLog.CreateEventSource(this.EventLog.Source, this.EventLog.Log);
+            }
+
+            try
+            {
+                string configFile = PowerShellConfigurator.FindConfigurationFile();
+
+                // Run the service
+                this.run = new WinLLDP(configFile);
+            }
+            catch (PowerShellConfiguratorException e)
+            {
+                this.EventLog.WriteEntry("Error loading configuration powershell script: " + e, EventLogEntryType.Error);
+                throw;
             }
 
             this.ReduceMemory();
