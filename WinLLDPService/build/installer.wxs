@@ -37,9 +37,6 @@
 		<!-- Install feature bundle -->
 		<Feature Id="Complete" Level="1" ConfigurableDirectory="INSTALLDIR" Title="$(var.ProductShortName)" Description="$(var.ProductShortName)" Display="expand" Absent="disallow" TypicalDefault="install" InstallDefault="local" AllowAdvertise="yes">
 			<ComponentRef Id="MainExecutable" Primary="yes" />
-			<ComponentRef Id="DLLPacketDotNet" Primary="yes" />
-			<ComponentRef Id="DLLSharpPcap" Primary="yes" />
-			<ComponentRef Id="DLLLLDPBase" Primary="yes" />
 			<ComponentRef Id="ProgramMenuDir" Primary="yes" />
 		</Feature>
 

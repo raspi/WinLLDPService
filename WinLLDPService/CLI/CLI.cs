@@ -1,41 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
-using System.Timers;
-
-/// <summary>
-/// CLI EXE for quickly debug sent LLDP packets without the need of starting Windows Service
-/// </summary>
-namespace WinLLDPService.CLI
+﻿namespace WinLLDPService.CLI
 {
-    static class LLDPSender
+    using System;
+    using System.Diagnostics;
+    using System.Timers;
+
+    using Timer = System.Timers.Timer;
+
+    /// <summary>
+    /// CLI EXE for quickly debug sent LLDP packets without the need of starting Windows Service
+    /// </summary>
+    internal static class LLDPSender
     {
-        private static System.Timers.Timer timer = new System.Timers.Timer(100);
+        /// <summary>
+        /// The timer.
+        /// </summary>
+        private static Timer timer = new Timer(100);
+
+        /// <summary>
+        /// The WinLLDP instance.
+        /// </summary>
         private static WinLLDP run;
 
         /// <summary>
-        /// Constructor
+        /// Constructor for sender
         /// </summary>
-        static void Main(string[] args)
+        /// <param name="args">
+        /// The args.
+        /// </param>
+        public static void Main(string[] args)
         {
-            
             Debug.AutoFlush = true;
             Debug.IndentLevel = 0;
 
             // Write to CLI also
-            TextWriterTraceListener writer = new TextWriterTraceListener(System.Console.Out);
+            TextWriterTraceListener writer = new TextWriterTraceListener(Console.Out);
             Debug.Listeners.Add(writer);
 
-            run = new WinLLDP(OsInfo.GetStaticInfo());
+            string configFile = PowerShellConfigurator.FindConfigurationFile();
+            run = new WinLLDP(configFile);
 
             // Send first packet immediately
             SendPacket();
 
             // Run the LLDP packet sender every X seconds
-            Debug.WriteLine("Starting timer", EventLogEntryType.Information);
             timer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
             timer.AutoReset = true;
             timer.Elapsed += TriggerEvent;
@@ -46,18 +53,27 @@ namespace WinLLDPService.CLI
             Console.ReadKey();
 
             timer.Stop();
-            
         }
 
         /// <summary>
         /// Main method which is ran every X seconds which is controlled by timer set up in Main()  
         /// </summary>
+        /// <param name="source">
+        /// The source.
+        /// </param>
+        /// <param name="ea">
+        /// The ea.
+        /// </param>
         private static void TriggerEvent(object source, ElapsedEventArgs ea)
         {
             SendPacket();
         }
 
-        private static void SendPacket() {
+        /// <summary>
+        /// Send LLDP packet.
+        /// </summary>
+        private static void SendPacket()
+        {
             Debug.IndentLevel = 0;
 
             try
@@ -69,7 +85,7 @@ namespace WinLLDPService.CLI
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Packet sent failed: " + ex.ToString(), EventLogEntryType.Error);
+                Debug.WriteLine("Packet sent failed: " + ex, EventLogEntryType.Error);
             }
         }
 
