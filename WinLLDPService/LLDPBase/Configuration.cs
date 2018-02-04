@@ -3,9 +3,6 @@
     using System.Collections.Generic;
     using System;
     using System.Diagnostics;
-    using System.Linq;
-    using System.Management;
-    using Microsoft.Win32;
 
     /// <summary>
     /// Configuration
