@@ -109,6 +109,7 @@
     <Compile Include="NetworkInfo.cs" />
     <Compile Include="Base.cs" />
     <Compile Include="PowerShellConfigurator.cs" />
+    <Compile Include="PowerShellConfiguratorException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

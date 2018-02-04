@@ -46,8 +46,7 @@
                 }
             }
 
-            throw new FileNotFoundException();
-
+            throw new PowerShellConfiguratorException(string.Format("Configuration file not found in paths: {0}", string.Join(Environment.NewLine, paths.ToArray())));
         }
 
         /// <summary>
