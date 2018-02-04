@@ -43,7 +43,7 @@
         }
 
         /// <summary>
-        /// Get paths where configuration file is searched
+        /// Get paths where PowerShell configuration file is searched
         /// </summary>
         /// <returns></returns>
         public static List<string> GetPaths()
@@ -56,14 +56,14 @@
 
             string registrypath = HklmGetString(Path.Combine("Software", "WinLLDPService"), "InstallPath");
 
-            if (!string.IsNullOrEmpty(registrypath))
+            if (!string.IsNullOrEmpty(registrypath) && !paths.Contains(registrypath))
             {
                 paths.Add(registrypath);
             }
 
             string cwd = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
 
-            if (!string.IsNullOrEmpty(cwd))
+            if (!string.IsNullOrEmpty(cwd) && !paths.Contains(cwd))
             {
                 paths.Add(cwd);
             }
@@ -122,7 +122,15 @@
                 // Load DLL so that 
                 // "New-Object WinLLDPService.Configuration"
                 // can be accessed from configuration file.
-                ps.AddScript("Add-Type -Path LLDPBase.dll");
+                string dll = Path.Combine(Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory), "LLDPBase.dll");
+
+                if (!File.Exists(dll))
+                {
+                    throw new PowerShellConfiguratorException(string.Format("Configuration file DLL not found: {0}", dll));
+                }
+
+                // Load DLL
+                ps.AddScript(string.Format("Add-Type -Path '{0}'", dll));
 
                 // Read configuration file
                 ps.AddScript(string.Format("& '{0}'", scriptPath));
