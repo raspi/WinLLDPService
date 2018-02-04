@@ -50,6 +50,8 @@
                 EventLog.CreateEventSource(this.EventLog.Source, this.EventLog.Log);
             }
 
+            this.EventLog.WriteEntry(string.Format("PowerShell configuration search paths: {0}", string.Join(Environment.NewLine, PowerShellConfigurator.GetPaths().ToArray())), EventLogEntryType.Information);
+
             try
             {
                 string configFile = PowerShellConfigurator.FindConfigurationFile();

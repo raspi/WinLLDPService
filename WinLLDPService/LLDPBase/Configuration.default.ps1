@@ -2,6 +2,7 @@
 $config = New-Object WinLLDPService.Configuration
 #$config.PortDescription.Add("port descr..")
 #$config.SystemDescription.Add("sys descr..")
+#$config.SystemName = "my machine"
 
-# Must return WinLLDPService.Configuration object
+# Must always return WinLLDPService.Configuration object
 Return $config

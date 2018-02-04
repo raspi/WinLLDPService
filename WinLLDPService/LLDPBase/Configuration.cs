@@ -5,24 +5,12 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Configuration
+    /// Configuration for LLDP TLVs
     /// </summary>
     [Serializable]
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class Configuration
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Configuration"/> class. 
-        /// </summary>
-        public Configuration()
-        {
-            this.Separator = this.defaultSeparator;
-            this.ChassisType = this.defaultChassisType;
-            this.MachineName = Environment.MachineName;
-            this.PortDescription = new List<string>();
-            this.SystemDescription = new List<string>();
-        }
-
         /// <summary>
         /// The Default chassis type.
         /// </summary>
@@ -36,20 +24,15 @@
         private readonly string defaultSeparator = " | ";
 
         /// <summary>
-        /// Gets Debug string
+        /// Initializes a new instance of the <see cref="Configuration"/> class. 
         /// </summary>
-        private string DebuggerDisplay
+        public Configuration()
         {
-            get
-            {
-                List<string> str = new List<string>
-                                       {
-                                           string.Format("{0}", this.GetType()),
-                                           string.Format("{0}", this.ToString()),
-                                       };
-
-                return string.Join(", ", str);
-            }
+            this.Separator = this.defaultSeparator;
+            this.ChassisType = this.defaultChassisType;
+            this.SystemName = Environment.MachineName;
+            this.PortDescription = new List<string>();
+            this.SystemDescription = new List<string>();
         }
 
         /// <summary>
@@ -68,14 +51,31 @@
         public List<string> PortDescription { get; set; }
 
         /// <summary>
-        /// Gets or sets the machine name.
+        /// Gets or sets the system name.
         /// </summary>
-        public string MachineName { get; set; }
+        public string SystemName { get; set; }
 
         /// <summary>
         /// Gets or sets the system description.
         /// </summary>
         public List<string> SystemDescription { get; set; }
+
+        /// <summary>
+        /// Gets Debug string
+        /// </summary>
+        private string DebuggerDisplay
+        {
+            get
+            {
+                List<string> str = new List<string>
+                                       {
+                                           string.Format("{0}", this.GetType()),
+                                           string.Format("{0}", this.ToString()),
+                                       };
+
+                return string.Join(", ", str);
+            }
+        }
 
         /// <inheritdoc />
         public override string ToString()
@@ -84,7 +84,7 @@
                                    {
                                        string.Format("{0}", this.GetType()),
                                        string.Format("Chassis type: '{0}'", this.ChassisType),
-                                       string.Format("Machine name: '{0}'", this.MachineName),
+                                       string.Format("System name: '{0}'", this.SystemName),
                                        string.Format("Port description: '{0}'", string.Join(this.Separator, this.PortDescription.ToArray())),
                                        string.Format("System description: '{0}'", string.Join(this.Separator, this.SystemDescription.ToArray())),
                                    };

@@ -49,7 +49,6 @@
             Debug.IndentLevel = 0;
 
             // Get list of connected adapters
-            Debug.WriteLine("Getting connected adapter list..", EventLogEntryType.Information);
             List<NetworkInterface> adapters = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(
                     x =>
@@ -69,13 +68,14 @@
 
             if (!adapters.Any())
             {
-                Debug.WriteLine("No adapters found.", EventLogEntryType.Information);
-
                 // No available adapters
                 return true;
             }
 
+            // load configuration file 
+            // see: Configuration.default.ps1
             Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath);
+
             CaptureDeviceList devices = CaptureDeviceList.Instance;
 
             // Wait time in milliseconds
@@ -90,10 +90,8 @@
 
                 try
                 {
-                    Debug.WriteLine("Generating packet", EventLogEntryType.Information);
                     Packet packet = this.CreateLLDPPacket(adapter, config);
                     Debug.IndentLevel = 0;
-                    Debug.WriteLine("Sending packet", EventLogEntryType.Information);
 
                     PcapDevice device = null;
 
@@ -146,11 +144,10 @@
             }
 
             return true;
-
         }
 
         /// <summary>
-        /// 
+        /// Stop execution
         /// </summary>
         public void Stop()
         {
@@ -200,6 +197,7 @@
                 }
             }
 
+            config.PortDescription.Add(string.Format("{0}", adapter.Name));
             config.PortDescription.Add(string.Format("Spd: {0}", NetworkInfo.ReadableSize(adapter.Speed)));
             config.PortDescription.Add(string.Format("Vendor: {0}", adapter.Description));
 
@@ -209,21 +207,26 @@
                 CapabilityOptions.StationOnly
             };
 
-            ushort expectedSystemCapabilitiesCapability = this.GetCapabilityOptionsBits(this.GetCapabilityOptions(adapter));
-            ushort expectedSystemCapabilitiesEnabled = this.GetCapabilityOptionsBits(capabilitiesEnabled);
+            ushort systemCapabilities = this.GetCapabilityOptionsBits(this.GetCapabilityOptions(adapter));
+            ushort systemCapabilitiesEnabled = this.GetCapabilityOptionsBits(capabilitiesEnabled);
 
             // Constuct LLDP packet 
             LLDPPacket lldpPacket = new LLDPPacket();
-            lldpPacket.TlvCollection.Add(new ChassisID(ChassisSubTypes.MACAddress, macAddress));
+
+            if (config.ChassisType == ChassisType.MacAddress)
+            {
+                lldpPacket.TlvCollection.Add(new ChassisID(ChassisSubTypes.MACAddress, macAddress));
+            }
+
             lldpPacket.TlvCollection.Add(new PortID(PortSubTypes.LocallyAssigned, Encoding.UTF8.GetBytes(adapter.Name)));
             lldpPacket.TlvCollection.Add(new TimeToLive(120));
             lldpPacket.TlvCollection.Add(new PortDescription(string.Join(config.Separator, config.PortDescription)));
-            lldpPacket.TlvCollection.Add(new SystemName(config.MachineName));
+            lldpPacket.TlvCollection.Add(new SystemName(config.SystemName));
             lldpPacket.TlvCollection.Add(new SystemDescription(string.Join(config.Separator, config.SystemDescription)));
-            lldpPacket.TlvCollection.Add(new SystemCapabilities(expectedSystemCapabilitiesCapability, expectedSystemCapabilitiesEnabled));
+            lldpPacket.TlvCollection.Add(new SystemCapabilities(systemCapabilities, systemCapabilitiesEnabled));
 
             // Add management address(es)
-            if (null != ipv4Properties)
+            if (ipv4Properties != null)
             {
                 if (ipv4Properties.IsForwardingEnabled)
                 {
@@ -241,7 +244,7 @@
             }
 
             // Add management IPv6 address(es)
-            if (null != ipv6Properties)
+            if (ipv6Properties != null)
             {
                 foreach (UnicastIPAddressInformation ip in ipProperties.UnicastAddresses)
                 {
@@ -255,7 +258,7 @@
             // End of LLDP packet
             lldpPacket.TlvCollection.Add(new EndOfLLDPDU());
 
-            if (0 == lldpPacket.TlvCollection.Count)
+            if (lldpPacket.TlvCollection.Count == 0)
             {
                 throw new ArgumentException("Couldn't construct LLDP TLVs.");
             }

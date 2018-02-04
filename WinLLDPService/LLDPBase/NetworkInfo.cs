@@ -1,7 +1,5 @@
 ﻿namespace WinLLDPService
 {
-    using System.Net;
-
     class NetworkInfo
     {
         /// <summary>

@@ -10,8 +10,18 @@
 
     using Microsoft.Win32;
 
+    /// <summary>
+    /// Configuration file
+    /// <see cref="Configuration"/>
+    /// </summary>
     public static class PowerShellConfigurator
     {
+        /// <summary>
+        /// Get value from registry
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="key">Key</param>
+        /// <returns>string value</returns>
         public static string HklmGetString(string path, string key)
         {
             try
@@ -33,19 +43,11 @@
         }
 
         /// <summary>
-        /// The find configuration file.
+        /// Get paths where configuration file is searched
         /// </summary>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
-        public static string FindConfigurationFile()
+        /// <returns></returns>
+        public static List<string> GetPaths()
         {
-            List<string> files = new List<string>
-                                     {
-                                         "Configuration.ps1",
-                                         "Configuration.default.ps1",
-                                     };
-
             List<string> paths = new List<string>
                                      {
                                          Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinLLDPService"),
@@ -66,13 +68,31 @@
                 paths.Add(cwd);
             }
 
-            Debug.WriteLine("Trying to locate configuration file:");
+            return paths;
+        }
+
+        /// <summary>
+        /// Find PowerShell configuration file.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string FindConfigurationFile()
+        {
+            List<string> files = new List<string>
+                                     {
+                                         "Configuration.ps1",
+                                         "Configuration.default.ps1",
+                                     };
+
+
+            List<string> paths = GetPaths();
+
             foreach (string path in paths)
             {
                 foreach (string file in files)
                 {
                     string f = Path.Combine(path, file);
-                    Debug.WriteLine(string.Format("Configuration file: {0}", f));
 
                     if (File.Exists(f))
                     {
@@ -116,10 +136,13 @@
 
                 if (ps.HadErrors)
                 {
-                    foreach (var err in ps.Streams.Error.ReadAll())
+                    List<string> errors = new List<string>();
+                    foreach (ErrorRecord err in ps.Streams.Error.ReadAll())
                     {
-                        Console.WriteLine(err);
+                        errors.Add(err.ToString());
                     }
+
+                    throw new PowerShellConfiguratorException(string.Format("Configuration file error: {0}", string.Join(Environment.NewLine, errors.ToArray())));
                 }
 
                 foreach (PSObject outputItem in outputCollection)
