@@ -7,7 +7,6 @@
     using System.IO;
     using System.Management.Automation;
     using System.Threading;
-    using System.Timers;
 
     using Microsoft.Win32;
 
@@ -48,18 +47,32 @@
                                      };
 
             List<string> paths = new List<string>
-            {
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinLLDPService"),
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WinLLDPService"),
-                HklmGetString(Path.Combine("Software", "WinLLDPService"), "InstallPath"),
-                Directory.GetCurrentDirectory(),
-            };
+                                     {
+                                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WinLLDPService"),
+                                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WinLLDPService"),
+                                     };
 
+            string registrypath = HklmGetString(Path.Combine("Software", "WinLLDPService"), "InstallPath");
+
+            if (!string.IsNullOrEmpty(registrypath))
+            {
+                paths.Add(registrypath);
+            }
+
+            string cwd = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
+
+            if (!string.IsNullOrEmpty(cwd))
+            {
+                paths.Add(cwd);
+            }
+
+            Debug.WriteLine("Trying to locate configuration file:");
             foreach (string path in paths)
             {
                 foreach (string file in files)
                 {
                     string f = Path.Combine(path, file);
+                    Debug.WriteLine(string.Format("Configuration file: {0}", f));
 
                     if (File.Exists(f))
                     {
@@ -73,7 +86,8 @@
         }
 
         /// <summary>
-        /// The load configuration.
+        /// Load Powershell configuration file.
+        /// See: Configuration.default.ps1
         /// </summary>
         /// <returns>
         /// The <see cref="Configuration"/>.
@@ -84,6 +98,13 @@
 
             using (PowerShell ps = PowerShell.Create())
             {
+
+                // Load DLL so that 
+                // "New-Object WinLLDPService.Configuration"
+                // can be accessed from configuration file.
+                ps.AddScript("Add-Type -Path LLDPBase.dll");
+
+                // Read configuration file
                 ps.AddScript(string.Format("& '{0}'", scriptPath));
 
                 PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
@@ -107,6 +128,8 @@
                     {
                         throw new NoNullAllowedException();
                     }
+
+                    //Console.WriteLine(outputItem.BaseObject);
 
                     // Read configuration
                     config = (Configuration)outputItem.BaseObject;
