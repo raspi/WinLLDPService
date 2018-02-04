@@ -13,7 +13,6 @@
 
     using SharpPcap;
     using SharpPcap.LibPcap;
-    using SharpPcap.WinPcap;
 
     using AddressFamily = System.Net.Sockets.AddressFamily;
 
