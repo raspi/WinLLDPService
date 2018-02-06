@@ -38,6 +38,18 @@
 <!-- If winpcap was used add also the logs: https://winpcap.org/bugs.htm -->
 <!-- If win10pcap was used add also the logs: see https://winpcap.org/bugs.htm -->
 
+### In case of bug report: PowerShell information
+
+PowerShell version used
+<!-- Run: $PSVersionTable.PSVersion | Format-List -->
+
+> …
+
+What are your execution policies?
+<!-- Run: Get-ExecutionPolicy -List -->
+
+> …
+
 ### In case of bug report: Expected behaviour you didn't see
 <!-- NOTE: For example: switch didn't receive any LLDP information -->
 <!-- NOTE: Attach possible log(s) and screenshot(s). -->
