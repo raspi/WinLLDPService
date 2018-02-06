@@ -20,3 +20,6 @@ See `WinLLDPService` directory.
 # License
 MIT
 
+# Thanks to
+
+* [JetBrains](https://www.jetbrains.com/) for [ReSharper](https://www.jetbrains.com/resharper/) Open Source license
