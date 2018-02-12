@@ -30,9 +30,12 @@
         {
             this.Separator = this.defaultSeparator;
             this.ChassisType = this.defaultChassisType;
-            this.SystemName = Environment.MachineName;
             this.PortDescription = new List<string>();
             this.SystemDescription = new List<string>();
+            this.SystemName = new List<string>
+                                  {
+                                      Environment.MachineName,
+                                  };
         }
 
         /// <summary>
@@ -53,7 +56,7 @@
         /// <summary>
         /// Gets or sets the system name.
         /// </summary>
-        public string SystemName { get; set; }
+        public List<string> SystemName { get; set; }
 
         /// <summary>
         /// Gets or sets the system description.
@@ -84,7 +87,7 @@
                                    {
                                        string.Format("{0}", this.GetType()),
                                        string.Format("Chassis type: '{0}'", this.ChassisType),
-                                       string.Format("System name: '{0}'", this.SystemName),
+                                       string.Format("System name: '{0}'", string.Join(this.Separator, this.SystemName.ToArray())),
                                        string.Format("Port description: '{0}'", string.Join(this.Separator, this.PortDescription.ToArray())),
                                        string.Format("System description: '{0}'", string.Join(this.Separator, this.SystemDescription.ToArray())),
                                    };

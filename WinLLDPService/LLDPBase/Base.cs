@@ -223,7 +223,7 @@
             lldpPacket.TlvCollection.Add(new PortID(PortSubTypes.LocallyAssigned, Encoding.UTF8.GetBytes(adapter.Name)));
             lldpPacket.TlvCollection.Add(new TimeToLive(120));
             lldpPacket.TlvCollection.Add(new PortDescription(string.Join(config.Separator, config.PortDescription)));
-            lldpPacket.TlvCollection.Add(new SystemName(config.SystemName));
+            lldpPacket.TlvCollection.Add(new SystemName(string.Join(config.Separator, config.SystemName)));
             lldpPacket.TlvCollection.Add(new SystemDescription(string.Join(config.Separator, config.SystemDescription)));
             lldpPacket.TlvCollection.Add(new SystemCapabilities(systemCapabilities, systemCapabilitiesEnabled));
 
