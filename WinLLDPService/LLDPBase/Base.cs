@@ -74,7 +74,9 @@
 
             // load configuration file 
             // see: Configuration.default.ps1
-            Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath);
+            Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath).Result;
+
+            Debug.WriteLine(config);
 
             CaptureDeviceList devices = CaptureDeviceList.Instance;
 

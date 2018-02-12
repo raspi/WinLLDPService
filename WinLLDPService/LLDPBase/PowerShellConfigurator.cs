@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.Data;
     using System.IO;
+    using System.Linq;
     using System.Management.Automation;
+    using System.Management.Automation.Runspaces;
     using System.Threading;
-
+    using System.Threading.Tasks;
     using Microsoft.Win32;
 
     /// <summary>
@@ -108,15 +110,33 @@
         /// Load Powershell configuration file.
         /// See: Configuration.default.ps1
         /// </summary>
+        /// <param name="scriptPath">
+        /// The PowerShell script path.
+        /// </param>
         /// <returns>
         /// The <see cref="Configuration"/>.
         /// </returns>
-        public static Configuration LoadConfiguration(string scriptPath)
+        public static async Task<Configuration> LoadConfiguration(string scriptPath)
         {
-            Configuration config = new Configuration();
 
+            if (!File.Exists(scriptPath))
+            {
+                throw new PowerShellConfiguratorException(string.Format("File not found: {0}", scriptPath));
+            }
+
+            // Load default
+            Configuration defaultConfig = new Configuration();
+
+            InitialSessionState initial = InitialSessionState.CreateDefault();
+            initial.LanguageMode = PSLanguageMode.RestrictedLanguage;
+            initial.ApartmentState = ApartmentState.STA;
+            initial.ThrowOnRunspaceOpenError = true;
+
+            using (Runspace rs = RunspaceFactory.CreateRunspace(initial))
             using (PowerShell ps = PowerShell.Create())
             {
+                rs.Open();
+                ps.Runspace = rs;
 
                 // Load DLL so that 
                 // "New-Object WinLLDPService.Configuration"
@@ -134,12 +154,7 @@
                 // Read configuration file
                 ps.AddScript(string.Format("& '{0}'", scriptPath));
 
-                PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
-                IAsyncResult result = ps.BeginInvoke<PSObject, PSObject>(null, outputCollection);
-                while (!result.IsCompleted)
-                {
-                    Thread.Sleep(10);
-                }
+                PSDataCollection<PSObject> outputCollection = await Task<PSDataCollection<PSObject>>.Factory.FromAsync(ps.BeginInvoke(), ps.EndInvoke);
 
                 if (ps.HadErrors)
                 {
@@ -152,21 +167,16 @@
                     throw new PowerShellConfiguratorException(string.Format("Configuration file error: {0}", string.Join(Environment.NewLine, errors.ToArray())));
                 }
 
-                foreach (PSObject outputItem in outputCollection)
+                Configuration cfg = outputCollection.FirstOrDefault(x => x.BaseObject is Configuration)?.BaseObject as Configuration;
+
+                if (cfg != null)
                 {
-                    if (outputItem == null)
-                    {
-                        throw new NoNullAllowedException();
-                    }
-
-                    //Console.WriteLine(outputItem.BaseObject);
-
-                    // Read configuration
-                    config = (Configuration)outputItem.BaseObject;
+                    return cfg;
                 }
             }
 
-            return config;
+            // Return default
+            return defaultConfig;
         }
     }
 }
