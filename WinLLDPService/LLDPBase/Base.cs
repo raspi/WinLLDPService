@@ -206,7 +206,7 @@
             // Capabilities enabled
             List<CapabilityOptions> capabilitiesEnabled = new List<CapabilityOptions>
             {
-                CapabilityOptions.StationOnly
+                CapabilityOptions.StationOnly,
             };
 
             ushort systemCapabilities = this.GetCapabilityOptionsBits(this.GetCapabilityOptions(adapter));
