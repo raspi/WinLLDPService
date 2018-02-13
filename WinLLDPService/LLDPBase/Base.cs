@@ -74,7 +74,9 @@
 
             // load configuration file 
             // see: Configuration.default.ps1
-            Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath);
+            Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath).Result;
+
+            Debug.WriteLine(config);
 
             CaptureDeviceList devices = CaptureDeviceList.Instance;
 
@@ -204,7 +206,7 @@
             // Capabilities enabled
             List<CapabilityOptions> capabilitiesEnabled = new List<CapabilityOptions>
             {
-                CapabilityOptions.StationOnly
+                CapabilityOptions.StationOnly,
             };
 
             ushort systemCapabilities = this.GetCapabilityOptionsBits(this.GetCapabilityOptions(adapter));
@@ -221,7 +223,7 @@
             lldpPacket.TlvCollection.Add(new PortID(PortSubTypes.LocallyAssigned, Encoding.UTF8.GetBytes(adapter.Name)));
             lldpPacket.TlvCollection.Add(new TimeToLive(120));
             lldpPacket.TlvCollection.Add(new PortDescription(string.Join(config.Separator, config.PortDescription)));
-            lldpPacket.TlvCollection.Add(new SystemName(config.SystemName));
+            lldpPacket.TlvCollection.Add(new SystemName(string.Join(config.Separator, config.SystemName)));
             lldpPacket.TlvCollection.Add(new SystemDescription(string.Join(config.Separator, config.SystemDescription)));
             lldpPacket.TlvCollection.Add(new SystemCapabilities(systemCapabilities, systemCapabilitiesEnabled));
 
