@@ -72,13 +72,19 @@
                 return true;
             }
 
-            // load configuration file 
+            // Capture devices
+            CaptureDeviceList devices = CaptureDeviceList.Instance;
+
+            if (devices.Count == 0)
+            {
+                // No available devices
+                return true;
+            }
+
+            // Load configuration file 
             // see: Configuration.default.ps1
             Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath).Result;
-
             Debug.WriteLine(config);
-
-            CaptureDeviceList devices = CaptureDeviceList.Instance;
 
             // Wait time in milliseconds
             int waitTime = 10000;
