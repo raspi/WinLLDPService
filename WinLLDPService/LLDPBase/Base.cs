@@ -54,16 +54,16 @@
                     x =>
 
                             // Link is up
-                            x.OperationalStatus == OperationalStatus.Up &&
+                            x.OperationalStatus == OperationalStatus.Up
 
                             // Not loopback (127.0.0.1 / ::1)
-                            x.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                            && x.NetworkInterfaceType != NetworkInterfaceType.Loopback
 
                             // Not tunnel
-                            x.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                            && x.NetworkInterfaceType != NetworkInterfaceType.Tunnel
 
                             // Supports IPv4 or IPv6
-                            (x.Supports(NetworkInterfaceComponent.IPv4) || x.Supports(NetworkInterfaceComponent.IPv6)))
+                            && (x.Supports(NetworkInterfaceComponent.IPv4) || x.Supports(NetworkInterfaceComponent.IPv6)))
                 .ToList();
 
             if (!adapters.Any())
