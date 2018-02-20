@@ -132,24 +132,24 @@
             initial.ApartmentState = ApartmentState.STA;
             initial.ThrowOnRunspaceOpenError = true;
 
+            // Load DLL so that 
+            // "New-Object WinLLDPService.Configuration"
+            // can be accessed from configuration file.
+            string dll = Path.Combine(Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory), "LLDPBase.dll");
+
+            if (!File.Exists(dll))
+            {
+                throw new PowerShellConfiguratorException(string.Format("Configuration file DLL not found: {0}", dll));
+            }
+
+            // Load DLL
+            initial.ImportPSModule(new string[] { dll });
+
             using (Runspace rs = RunspaceFactory.CreateRunspace(initial))
             using (PowerShell ps = PowerShell.Create())
             {
                 rs.Open();
                 ps.Runspace = rs;
-
-                // Load DLL so that 
-                // "New-Object WinLLDPService.Configuration"
-                // can be accessed from configuration file.
-                string dll = Path.Combine(Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory), "LLDPBase.dll");
-
-                if (!File.Exists(dll))
-                {
-                    throw new PowerShellConfiguratorException(string.Format("Configuration file DLL not found: {0}", dll));
-                }
-
-                // Load DLL
-                ps.AddScript(string.Format("Add-Type -Path '{0}'", dll));
 
                 // Read configuration file
                 ps.AddScript(string.Format("& '{0}'", scriptPath));

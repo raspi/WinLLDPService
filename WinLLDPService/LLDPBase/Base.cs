@@ -54,16 +54,16 @@
                     x =>
 
                             // Link is up
-                            x.OperationalStatus == OperationalStatus.Up &&
+                            x.OperationalStatus == OperationalStatus.Up
 
                             // Not loopback (127.0.0.1 / ::1)
-                            x.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                            && x.NetworkInterfaceType != NetworkInterfaceType.Loopback
 
                             // Not tunnel
-                            x.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                            && x.NetworkInterfaceType != NetworkInterfaceType.Tunnel
 
                             // Supports IPv4 or IPv6
-                            (x.Supports(NetworkInterfaceComponent.IPv4) || x.Supports(NetworkInterfaceComponent.IPv6)))
+                            && (x.Supports(NetworkInterfaceComponent.IPv4) || x.Supports(NetworkInterfaceComponent.IPv6)))
                 .ToList();
 
             if (!adapters.Any())
@@ -72,13 +72,19 @@
                 return true;
             }
 
-            // load configuration file 
+            // Capture devices
+            CaptureDeviceList devices = CaptureDeviceList.Instance;
+
+            if (devices.Count == 0)
+            {
+                // No available devices
+                return true;
+            }
+
+            // Load configuration file 
             // see: Configuration.default.ps1
             Configuration config = PowerShellConfigurator.LoadConfiguration(this.ConfigurationFilePath).Result;
-
             Debug.WriteLine(config);
-
-            CaptureDeviceList devices = CaptureDeviceList.Instance;
 
             // Wait time in milliseconds
             int waitTime = 10000;
@@ -90,31 +96,27 @@
 
                 Debug.WriteLine(string.Format("Adapter '{0}':", adapter.Name), EventLogEntryType.Information);
 
+                Packet packet = this.CreateLLDPPacket(adapter, config);
+                Debug.IndentLevel = 0;
+
+                // Find device.
+                // Device MAC address can't be used as it requires adapter to be opened first.
+                PcapDevice device = devices.FirstOrDefault(x => x.Name.ToLower().Contains(adapter.Id.ToLower())) as PcapDevice;
+
+                if (device == null)
+                {
+                    // Device not found, skip
+                    Debug.WriteLine("adapter was null");
+                    continue;
+                }
+
                 try
                 {
-                    Packet packet = this.CreateLLDPPacket(adapter, config);
-                    Debug.IndentLevel = 0;
-
-                    PcapDevice device = null;
-
-                    for (var index = 0; index < devices.Count; index++)
+                    if (!device.Opened)
                     {
-                        PcapDevice dev = (PcapDevice)devices[index];
-                        PcapInterface iface = dev.Interface;
-
-                        if (iface.MacAddress.Equals(adapter.GetPhysicalAddress()))
-                        {
-                            device = dev;
-                            break;
-                        }
+                        // Open device in promiscuous mode
+                        device.Open(DeviceMode.Promiscuous, waitTime);
                     }
-
-                    if (device == null)
-                    {
-                        continue;
-                    }
-
-                    device.Open(DeviceMode.Promiscuous, waitTime);
 
                     sw.Start();
                     do
@@ -133,15 +135,20 @@
                     }
 
                     Debug.IndentLevel = 0;
-
                 }
                 catch (PcapException e)
                 {
                     Debug.WriteLine(string.Format("Error sending packet:{0}{1}", Environment.NewLine, e), EventLogEntryType.Error);
                 }
+                finally
+                {
+                    if (device.Opened)
+                    {
+                        // Close device
+                        device.Close();
+                    }
+                }
 
-                Debug.WriteLine(string.Empty, EventLogEntryType.Information);
-                Debug.WriteLine(new String('-', 40), EventLogEntryType.Information);
                 Debug.IndentLevel = 0;
             }
 
@@ -209,6 +216,15 @@
                 CapabilityOptions.StationOnly,
             };
 
+            // Capabilities enabled
+            if (ipv4Properties != null)
+            {
+                if (ipv4Properties.IsForwardingEnabled)
+                {
+                    capabilitiesEnabled.Add(CapabilityOptions.Router);
+                }
+            }
+
             ushort systemCapabilities = this.GetCapabilityOptionsBits(this.GetCapabilityOptions(adapter));
             ushort systemCapabilitiesEnabled = this.GetCapabilityOptionsBits(capabilitiesEnabled);
 
@@ -227,15 +243,9 @@
             lldpPacket.TlvCollection.Add(new SystemDescription(string.Join(config.Separator, config.SystemDescription)));
             lldpPacket.TlvCollection.Add(new SystemCapabilities(systemCapabilities, systemCapabilitiesEnabled));
 
-            // Add management address(es)
+            // Add management IPv4 address(es)
             if (ipv4Properties != null)
             {
-                if (ipv4Properties.IsForwardingEnabled)
-                {
-                    capabilitiesEnabled.Add(CapabilityOptions.Router);
-                }
-
-                // Add management IPv4 address(es)
                 foreach (UnicastIPAddressInformation ip in ipProperties.UnicastAddresses)
                 {
                     if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
@@ -296,7 +306,6 @@
             if (device.Opened)
             {
                 device.SendPacket(payload);
-                device.Close();
                 return true;
             }
 
